@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2002-2004 Kasper Skï¿½hj (kasperYYYY@typo3.com)
+*  (c) 2002-2004 Kasper Skårhøj (kasperYYYY@typo3.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,7 +24,7 @@
 /**
  * Plugin 'Extension Manager Frontend' for the 'extrep_mgm' extension.
  *
- * @author		Kasper Skï¿½hj <kasperYYYY@typo3.com>
+ * @author		Kasper Skårhøj <kasperYYYY@typo3.com>
  * @co-author	Robert Lemke <robert@typo3.org>
  */
 /**
@@ -60,15 +60,15 @@ class tx_extrepmgm_registerextkeys extends tx_extrepmgm_pi1 {
 	function main()	{
 
 		if ($this->checkLogin()) {
-			return "<p>You are not logged in. Please do so before you can register extension keys.</p>";
+			return "<p>You are not logged in. You have to do so before you can register extension keys.</p>";
 		}
 
 		list($OK,$errors) = $this->validateSubmittedKey();
-		$extKey = trim($this->piData["regKey"]);
+		$extKey = trim($this->piData['regKey']);
 
 		if ($OK)	{
-			if ($this->piData["registerNow"] &&
-				trim($this->piData["field_title"]) )	{
+			if ($this->piData['registerNow'] &&
+				trim($this->piData['field_title']) )	{
 
 				$this->registerKeyFromPIData();
 
@@ -76,7 +76,7 @@ class tx_extrepmgm_registerextkeys extends tx_extrepmgm_pi1 {
 
 				';
 			} else {
-				if ($this->piData["registerNow"])	{
+				if ($this->piData['registerNow'])	{
 					$content.='<p><span style="color:red;font-weight:bold;">You didn\'t fill in all fields! Please do so!</span></p>';
 				}
 				$content.='
@@ -86,31 +86,31 @@ class tx_extrepmgm_registerextkeys extends tx_extrepmgm_pi1 {
 					<p>If you wish to go on, please enter your information here:</p>
 
 					<form action="'.$this->linkThisCmd().'" method="post">
-					<input type="hidden" name="'.$this->piFieldName("regKey").'" value="'.htmlspecialchars($extKey).'" />
+					<input type="hidden" name="'.$this->piFieldName('regKey').'" value="'.htmlspecialchars($extKey).'" />
 
 
-					<p>Your name: '.$GLOBALS["TSFE"]->fe_user->user["name"].'<br />
-					Your email: '.$GLOBALS["TSFE"]->fe_user->user["email"].'<br />
-					Your Company: '.$GLOBALS["TSFE"]->fe_user->user["company"].'</p>
+					<p>Your name: '.$GLOBALS['TSFE']->fe_user->user['name'].'<br />
+					Your email: '.$GLOBALS['TSFE']->fe_user->user['email'].'<br />
+					Your Company: '.$GLOBALS['TSFE']->fe_user->user['company'].'</p>
 
 					<p><em>(Info from your user profile. If this is wrong, go edit your user profile!)</em></p>
 
 					<p>Extension Title <strong>(required)</strong>:</p>
-					<p><input type="text" name="'.$this->piFieldName("field_title").'" value="'.htmlspecialchars($this->piData["field_title"]).'"><br>
+					<p><input type="text" name="'.$this->piFieldName('field_title').'" value="'.htmlspecialchars($this->piData['field_title']).'"><br>
 						<em>(Name your extension with a title)</em></p>
 
 					<p>Description:</p>
-					<p><textarea cols="30" rows="5" name="'.$this->piFieldName("field_description").'">'.htmlspecialchars($this->piData["field_description"]).'</textarea><br>
+					<p><textarea cols="30" rows="5" name="'.$this->piFieldName('field_description').'">'.htmlspecialchars($this->piData['field_description']).'</textarea><br>
 						<em>(Please make a short and clear statement about what this extension is about)</em></p>
 
 					<p>Upload password (not required for now - if no password, no upload possible):</p>
-					<p><input type="text" name="'.$this->piFieldName("field_up").'" value="'.htmlspecialchars($this->piData["field_up"]).'"><br>
+					<p><input type="text" name="'.$this->piFieldName('field_up').'" value="'.htmlspecialchars($this->piData['field_up']).'"><br>
 						<em>(The upload password is used when you want to update the repository with new versions of your extension)</em></p>
 
 					<p>
 					<input type="submit" value="Register key">
-					<input type="hidden" value="1" name="'.$this->piFieldName("registerNow").'">
-					<input type="hidden" value="'.$GLOBALS["TSFE"]->fe_user->user["uid"].'" name="'.$this->piFieldName("owner_fe_user").'">
+					<input type="hidden" value="1" name="'.$this->piFieldName('registerNow').'">
+					<input type="hidden" value="'.$GLOBALS['TSFE']->fe_user->user['uid'].'" name="'.$this->piFieldName('owner_fe_user').'">
 					'.$this->cmdHiddenField().'</p>
 					</form>
 				';
@@ -175,15 +175,15 @@ class tx_extrepmgm_registerextkeys extends tx_extrepmgm_pi1 {
 			}
 			$content.='
 				<form action="'.$this->linkThisCmd().'" method="post" name="'.$this->varPrefix.'_register">
-				<p><input type="text" name="'.$this->piFieldName("regKey").'" value="'.htmlspecialchars($this->piData["regKey"]).'" maxlength="20" /></p>
-				<p><input type="checkbox" name="_" value="0" onClick="if (this.checked) {document.'.$this->varPrefix.'_register[\''.$this->piFieldName("regKey").'\'].value=\'test_'.$this->randomWordPrefix().'\';}">I just want to test...</p>
-<!--				<p><input type="checkbox" name="_" value="0" onClick="if (this.checked) {document.'.$this->varPrefix.'_register[\''.$this->piFieldName("regKey").'\'].value=\'rnd'.$this->randomWordPrefix().'\';}">Pass me a random key...</p> -->
+				<p><input type="text" name="'.$this->piFieldName('regKey').'" value="'.htmlspecialchars($this->piData['regKey']).'" maxlength="20" /></p>
+				<p><input type="checkbox" name="_" value="0" onClick="if (this.checked) {document.'.$this->varPrefix.'_register[\''.$this->piFieldName('regKey').'\'].value=\'test_'.$this->randomWordPrefix().'\';}">I just want to test...</p>
+<!--				<p><input type="checkbox" name="_" value="0" onClick="if (this.checked) {document.'.$this->varPrefix.'_register[\''.$this->piFieldName('regKey').'\'].value=\'rnd'.$this->randomWordPrefix().'\';}">Pass me a random key...</p> -->
 				<p><input type="submit" value="Evaluate key validity">'.$this->cmdHiddenField().'</p>
 				</form>
 			';
 		}
 
-		return '<DIV'.$this->pi_classParam("regkey").'>'.$content.'</DIV>';
+		return '<DIV'.$this->pi_classParam('regkey').'>'.$content.'</DIV>';
 	}
 
 	/**
@@ -193,15 +193,15 @@ class tx_extrepmgm_registerextkeys extends tx_extrepmgm_pi1 {
 	 */
 	function registerKeyFromPIData()	{
 		$dataArr=array(
-			"title" => trim($this->piData["field_title"]),
-			"description" => trim($this->piData["field_description"]),
-			"extension_key" => trim($this->piData["regKey"]),
-			"extension_key_modules" => trim(str_replace("_","",$this->piData["regKey"])),
-			"owner_fe_user" => $this->piData["owner_fe_user"],
-			"members_only" => 1,
-			"upload_password" => trim($this->piData["field_up"])
+			'title' => trim($this->piData['field_title']),
+			'description' => trim($this->piData['field_description']),
+			'extension_key' => trim($this->piData['regKey']),
+			'extension_key_modules' => trim(str_replace('_','',$this->piData['regKey'])),
+			'owner_fe_user' => $this->piData['owner_fe_user'],
+			'members_only' => 1,
+			'upload_password' => trim($this->piData['field_up'])
 		);
-		$q = $this->cObj->DBgetInsert("tx_extrep_keytable", $this->dbPageId, $dataArr, implode(",",array_keys($dataArr)));
+		$q = $this->cObj->DBgetInsert('tx_extrep_keytable', $this->dbPageId, $dataArr, implode(',',array_keys($dataArr)));
 		$res = mysql(TYPO3_db,$q);
 	}
 
@@ -217,8 +217,8 @@ class tx_extrepmgm_registerextkeys extends tx_extrepmgm_pi1 {
 			$uString.=strtolower(chr(rand(65,65+25)));
 		}
 
-		$K_letters=ereg_replace("[eyuioa]","",$uString);
-		$A_letters=ereg_replace("[^eyuioa]","",$uString);
+		$K_letters=ereg_replace('[eyuioa]','',$uString);
+		$A_letters=ereg_replace('[^eyuioa]','',$uString);
 		$letters=$uString;
 
 		$str=$K_letters[0].$A_letters[1].$letters[2].$A_letters[3].$letters[4];
@@ -231,14 +231,14 @@ class tx_extrepmgm_registerextkeys extends tx_extrepmgm_pi1 {
 	 * @return	[type]		...
 	 */
 	function validateSubmittedKey()	{
-		if ($this->piData["regKey"])	{
-			$extKey = trim($this->piData["regKey"]);
+		if ($this->piData['regKey'])	{
+			$extKey = trim($this->piData['regKey']);
 			$res = $this->validateExtensionKey($extKey);
 			if (is_array($res))	{
-				$content.="<ul><li>".implode("</li><li>",$res)."</li></ul>";
+				$content.='<ul><li>'.implode('</li><li>',$res).'</li></ul>';
 			} else {
 				if (is_array($this->checkUniquenessOfKey($extKey)))	{
-					$content.="<p>Error: Key was registered already!</p>";
+					$content.='<p>Error: Key was registered already!</p>';
 				} else {
 					$OK=1;
 				}
@@ -255,28 +255,28 @@ class tx_extrepmgm_registerextkeys extends tx_extrepmgm_pi1 {
 	 */
 	function validateExtensionKey($extKey)	{
 		$errors=array();
-		$extKey_module = str_replace("_","",$extKey);
+		$extKey_module = str_replace('_','',$extKey);
 			// Check characters used:
-		if (ereg("[^a-z0-9_]",$extKey,$reg))	{
+		if (ereg('[^a-z0-9_]',$extKey,$reg))	{
 			$errors[]="Extension keys cannot contain characters apart from a-z (lowercase), 0-9 and '_' (underscore)";
 		}
 
 			// Check characters used:
-		if (ereg("^[0-9_]",$extKey,$reg) || ereg("[_]$",$extKey,$reg))	{
+		if (ereg('^[0-9_]',$extKey,$reg) || ereg("[_]$",$extKey,$reg))	{
 			$errors[]="Extension keys cannot start or end with 0-9 and '_' (underscore)";
 		}
 
 			// Length
 		if (strlen($extKey)>30 || strlen($extKey)<3 || strlen($extKey_module)<3)	{
-			$errors[]="Extension keys cannot be shorter than 3 and longer than 30 characters (and should be kepts as short as possible, although still meaningful)";
+			$errors[]='Extension keys cannot be shorter than 3 and longer than 30 characters (and should be kepts as short as possible, although still meaningful)';
 		}
 
 			// Bad prefixes:
-		$pList = "tx,u,user_,pages,tt_,sys_,ts_language_,csh_";
-		$badPre = explode(",",$pList);
+		$pList = 'tx,u,user_,pages,tt_,sys_,ts_language_,csh_';
+		$badPre = explode(',',$pList);
 		while(list(,$pref)=each($badPre))	{
 			if ($pref && t3lib_div::isFirstPartOfStr($extKey,$pref))	{
-				$errors[]="Prefixed with '".$pref."'. Extension keys cannot be prefixed with any prefixes from this list: <em>".$pList."</em>";
+				$errors[]="Prefixed with '".$pref."'. Extension keys cannot be prefixed with any prefixes from this list: <em>".$pList.'</em>';
 			}
 		}
 
@@ -290,8 +290,8 @@ class tx_extrepmgm_registerextkeys extends tx_extrepmgm_pi1 {
 	 * @return	[type]		...
 	 */
 	function checkUniquenessOfKey($extKey)	{
-		$extKey_module = str_replace("_","",$extKey);
-		$query = "SELECT uid FROM tx_extrep_keytable WHERE pid=".intval($this->dbPageId)." AND (extension_key='".addslashes($extKey)."' OR extension_key_modules='".addslashes($extKey_module)."')".$GLOBALS["TSFE"]->sys_page->deleteClause("tx_extrep_keytable");
+		$extKey_module = str_replace('_','',$extKey);
+		$query = 'SELECT uid FROM tx_extrep_keytable WHERE pid='.intval($this->dbPageId)." AND (extension_key='".addslashes($extKey)."' OR extension_key_modules='".addslashes($extKey_module)."')".$GLOBALS['TSFE']->sys_page->deleteClause('tx_extrep_keytable');
 		$res = mysql(TYPO3_db,$query);
 		if ($row=mysql_fetch_assoc($res))	{
 			return $row;
@@ -305,7 +305,7 @@ class tx_extrepmgm_registerextkeys extends tx_extrepmgm_pi1 {
 	 * @return	[type]		...
 	 */
 	function linkThisCmd($uPA=array())	{
-		$uP = t3lib_div::implodeArrayForUrl($this->varPrefix,array_merge(array("cmd"=>$this->currentCMD),$uPA));
+		$uP = t3lib_div::implodeArrayForUrl($this->varPrefix,array_merge(array('cmd'=>$this->currentCMD),$uPA));
 		$url = $this->cObj->currentPageUrl($uP);
 		return $url;
 	}
@@ -317,7 +317,7 @@ class tx_extrepmgm_registerextkeys extends tx_extrepmgm_pi1 {
 	 * @return	[type]		...
 	 */
 	function piFieldName($key)	{
-		return $this->varPrefix."[".$key."]";
+		return $this->varPrefix.'['.$key.']';
 	}
 
 	/**
@@ -326,7 +326,7 @@ class tx_extrepmgm_registerextkeys extends tx_extrepmgm_pi1 {
 	 * @return	[type]		...
 	 */
 	function cmdHiddenField()	{
-		return '<input type="hidden"  name="'.$this->piFieldName("cmd").'" value="'.htmlspecialchars($this->currentCMD).'">';
+		return '<input type="hidden"  name="'.$this->piFieldName('cmd').'" value="'.htmlspecialchars($this->currentCMD).'">';
 	}
 
 }
