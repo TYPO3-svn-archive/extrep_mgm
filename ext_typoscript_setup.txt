@@ -1,0 +1,191 @@
+plugin.tx_extrepmgm_pi1.default {
+  docPage = 0
+  tx_newloginbox_pi3-showUidPid =
+}
+
+plugin.tx_extrepmgm_pi1.default.listView {
+	results_at_a_time = 
+	maxPages = 
+}
+
+plugin.tx_extrepmgm_pi1.default.annotationConf	{
+}
+
+plugin.tx_extrepmgm_pi1.4.listUsers {
+	tableParams = border=0 cellpadding=0 cellspacing=1
+	referencesPid=0
+	tx_newloginbox_pi3-showUidPid = 0
+}
+
+# DOCUMENTATION:
+plugin.tx_extrepmgm_pi1.2.toc {
+	tableParams = border=0 cellpadding=0 cellspacing=0
+	tableParams_status = border=0 cellpadding=0 cellspacing=0
+	tableParams_topmenu = border=0 cellpadding=0 cellspacing=2
+}
+plugin.tx_extrepmgm_pi1.2 {
+  extPage = 0
+  annoPage = 0
+  docPage = 0
+}
+plugin.tx_extrepmgm_pi1.2.doc {
+  tableParams_bbar = border=0 cellspacing=0 cellpadding=0 width="100%"
+  content_stdWrap {
+  }
+}
+
+plugin.tx_extrepmgm_pi1.default.listTranslations {
+	tableParams = border=0 cellpadding=0 cellspacing=0
+}
+
+plugin.tx_extrepmgm_pi1.default.listTeam {
+	tableParams = border=0 cellpadding=0 cellspacing=2
+}
+
+plugin.tx_extrepmgm_pi1.default.annotationConf {
+	editFormFieldWidth = 400
+	singleView.tableParams = border=0 cellpadding=0 cellspacing=2
+	listView {
+		results_at_a_time = 30
+		maxPages = 8
+	}
+	_LOCAL_LANG.default.create_anno = Create new thread
+}
+
+plugin.tx_extrepmgm_pi1.default.listExt {
+	tableParams = border=0 cellpadding=0 cellspacing=0
+	tableParams_extInfoTbl = border=0 cellpadding=0 cellspacing=1 width=100%
+	tableParams_reviewSel = border=0 cellpadding=0 cellspacing=3
+	tableParams_fullList = border=0 cellpadding=2 cellspacing=1
+	tableParams_myList = border=0 cellpadding=1 cellspacing=0
+	
+	updateDateFormat = d-m-y H:i
+	bgcol.own_member = #F6CA96
+	bgcol.selected = #EDE9DD
+	bgcol.default = #D9D5C9
+	entryVertDistance = 10
+}
+plugin.tx_extrepmgm_pi1.default.displayExt {
+	tableParams = border=0 cellpadding=0 cellspacing=1 width="100%"
+	tableParams_extInfoTbl = border=0 cellpadding=0 cellspacing=1 width="100%"
+	tableParams_mentorRv = border=0 cellpadding=0 cellspacing=2
+	tableParams_topmenu = border=0 cellpadding=0 cellspacing=2
+	tableParams_versionTable = border=0 cellpadding=0 cellspacing=1
+	tableParams_files  = border=0 cellpadding=0 cellspacing=1
+	tableParams_translation = border=0 cellpadding=0 cellspacing=1
+	translation_color_ok = #00cc00
+	translation_color_missing = red
+	translation_higher_priority = #999999
+	translation_changed_by_you = #9999ff
+	translation_changed_by_someelse = #9999ff
+}
+
+  # Example of default set CSS styles (these go into the document header):
+plugin.tx_extrepmgm_pi1._CSS_DEFAULT_STYLE (
+	<!-- General -->
+	.tx-extrepmgm-pi1 H3 {font-family: arial; font-size: 16px;}
+	.tx-extrepmgm-pi1 P {font-family: arial; font-size: 12px;}
+	.tx-extrepmgm-pi1 TABLE {font-family: arial; font-size: 12px;}
+	.tx-extrepmgm-pi1 TD {padding: 0px 3px 0px 3px; vertical-align: top;}
+	.tx-extrepmgm-pi1 TD.tx-extrepmgm-pi1-HCell {background-color: #ccccdd; font-weight: bold;}
+
+	<!-- Mode selector -->
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-modeSelector TD {padding: 0px 0px 0px 0px; background-color: #eeeeee;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-modeSelector TD.tx-extrepmgm-pi1-modeSelector-SCell {font-weight: bold;  background-color: #ccccff;}
+
+	<!-- Extension listing -->
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList	.tx-extrepmgm-pi1-catTbl TD.tx-extrepmgm-pi1-catHead {background-color: #eeeeee;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList	.tx-extrepmgm-pi1-catTbl TD.tx-extrepmgm-pi1-catHead A {font-weight: bold;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList	.tx-extrepmgm-pi1-catTbl TD P {color: navy;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList H3 {color: teal;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList	P {color: green;}
+
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList .tx-extrepmgm-pi1-lTbl TABLE.tx-extrepmgm-pi1-extInfoTbl {font-size: 11px;}	
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList .tx-extrepmgm-pi1-lTbl TABLE.tx-extrepmgm-pi1-extInfoTbl TD {background-color: #eeeeee;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList .tx-extrepmgm-pi1-lTbl TABLE.tx-extrepmgm-pi1-extInfoTbl TD.tx-extrepmgm-pi1-HCell {background-color: #cccccc; font-weight: bold;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList .tx-extrepmgm-pi1-lTbl .tx-extrepmgm-pi1-HRow A {font-weight: bold;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList .tx-extrepmgm-pi1-lTbl .tx-extrepmgm-pi1-HRow {font-size: 13px;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList .tx-extrepmgm-pi1-lTbl P.tx-extrepmgm-pi1-descr {}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList .tx-extrepmgm-pi1-lTbl P.tx-extrepmgm-pi1-doclinks {font-size: 10px;}
+
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList .tx-extrepmgm-pi1-lTbl TD.tx-extrepmgm-pi1-review {font-size: 10px; background-color: white; align: center;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-extList .tx-extrepmgm-pi1-lTbl TD.tx-extrepmgm-pi1-review IMG {border: 1px solid black;}
+	
+	<!-- Full list of extensions - as in the EM -->
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-fullList SELECT {font-size: 12px; font-family: arial, verdana;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-fullList P {color: green;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-fullList TABLE.tx-extrepmgm-pi1-lTbl {font-family: verdana; font-size: 10px;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-fullList TABLE.tx-extrepmgm-pi1-lTbl TD.tx-extrepmgm-pi1-HCell {font-family: verdana; font-size: 11px;}
+
+	<!-- "My list" of extensions -->
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-myList SELECT {font-size: 12px; font-family: arial, verdana;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-myList P {color: green;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-myList TABLE.tx-extrepmgm-pi1-legend {color: olive; margin-bottom: 10px;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-myList TABLE.tx-extrepmgm-pi1-lTbl {color: teal;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-myList TABLE.tx-extrepmgm-pi1-lTbl TD  {background-color: #ffeeff;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-myList TABLE.tx-extrepmgm-pi1-lTbl TR.tx-extrepmgm-pi1-oddRow TD {background-color: #eeffff;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-myList TABLE.tx-extrepmgm-pi1-lTbl TD.tx-extrepmgm-pi1-HCell {background-color: navy; color:white;font-family: verdana; font-size: 13px; font-weight: bold;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-myList TABLE.tx-extrepmgm-pi1-lTbl TD.tx-extrepmgm-pi1-HCell A {color:white;}
+	
+	<!-- Registration of extension keys -->
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-regkey H3 {color: teal;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-regkey P {color: green;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-regkey OL {color: red;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-regkey UL {color: olive;}
+	
+	<!-- Listing users -->
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-ulist H3 {color: teal;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-ulist P {color: green;}
+	
+	<!-- Listing translators -->
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-tlist H3 {color: teal;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-tlist P {color: green;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-tlist TABLE {font-family: verdana; font-size: 10px;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-tlist TD {background-color: #eeeeee;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-tlist TD.tx-extrepmgm-pi1-HCell {background-color: #ffccee;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-tlist INPUT {}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-tlist .tx-extrepmgm-pi1-admLink A {background-color: #ccffee;}
+	
+	<!-- Listing translators -->
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-tplist TD {background-color: #eeeeee;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-tplist TD.tx-extrepmgm-pi1-HCell {background-color: #ffccee;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-tplist .tx-extrepmgm-pi1-admLink A {background-color: #ccffee;}	
+	
+	<!-- Single display -->
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView SELECT {font-size: 12px; font-family: arial, verdana;}	
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView INPUT {font-size: 12px; font-family: arial, verdana;}	
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TEXTAREA {font-size: 12px; font-family: arial, verdana;}	
+
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView H3 {color: teal;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView P {color: green;}
+
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-topmenu {margin-bottom: 10px;}	
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-topmenu TD  {background-color: #eeeeee;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-topmenu TD.tx-extrepmgm-pi1-SCell  {background-color: #cccccc;}
+
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-mentorRv TD  {background-color: #eeeeee;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-mentorRv SELECT {font-size: 12px; font-family: arial, verdana;}	
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-mentorRv INPUT {font-size: 12px; font-family: arial, verdana;}	
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-mentorRv TEXTAREA {font-size: 12px; font-family: arial, verdana;}	
+	
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-dTbl {font-size: 12px;}	
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-dTbl TABLE.tx-extrepmgm-pi1-vTbl {font-size: 11px;}	
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-dTbl TABLE.tx-extrepmgm-pi1-vTbl TD.tx-extrepmgm-pi1-HCell {background-color: #cccccc;}	
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-dTbl TD {background-color: #eeeeee;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-dTbl TD.tx-extrepmgm-pi1-HCell {background-color: #cccccc; font-weight: bold;}
+	
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-lTbl TD A {text-decoration: none;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-lTbl TD {text-align : center;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-lTbl TD.tx-extrepmgm-pi1-HCell {background-color: #eeeeee; text-align : left;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-lTbl TR.tx-extrepmgm-pi1-HRow TD {background-color: #ffeecc; text-align : left;}
+
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-extInfoTbl {font-size: 11px;}	
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-extInfoTbl TD {background-color: #eeeeee;}
+	.tx-extrepmgm-pi1 .tx-extrepmgm-pi1-singleView TABLE.tx-extrepmgm-pi1-extInfoTbl TD.tx-extrepmgm-pi1-HCell {background-color: #cccccc; font-weight: bold;}
+)
+  # Example of how to overrule LOCAL_LANG values for the plugin:
+plugin.tx_extrepmgm_pi1.default._LOCAL_LANG.default {
+}
+  # Example of how to set default values from TS in the incoming array, $this->piVars of the plugin:
+plugin.tx_extrepmgm_pi1.default._DEFAULT_PI_VARS {
+}
