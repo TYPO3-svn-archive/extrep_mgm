@@ -1,0 +1,1339 @@
+a:2:{s:4:"meta";a:1:{s:5:"title";s:31:"Extension Repository Management";}s:5:"files";a:1:{s:30:"pi1/class.tx_extrepmgm_pi1.php";a:2:{s:8:"filesize";i:251104;s:3:"DAT";a:76:{i:1;a:8:{s:6:"header";s:42:"class tx_extrepmgm_pi1 extends tx_extrep {";s:5:"class";i:1;s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:24:"
+[Describe function...]
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:1715:"	var $prefixId = "tx_extrepmgm_pi1";		// Same as class name
+	var $scriptRelPath = "pi1/class.tx_extrepmgm_pi1.php";	// Path to this script relative to the extension dir.
+	var $extKey = "extrep_mgm";	// The extension key.
+	var $byPassMemberOK=1;
+
+	var $reviewStates = Array(
+		0 => array("No review", "The extension is not reviewed yet or is currently being reviewed.", "0_notreviewed.gif"),
+		5 => array("No cigar", "Still missing a lot before it's generally useful.", "1_nocigar.gif"),
+		10 => array("Close, but no cigar","Almost there, you are close! Take that last step!", "2_closebutnocigar.gif"),
+		15 => array("Cigar","Stable, working fine. Good extension. Celebrate it!","3_cigar.gif"),
+		20 => array("Cohiba!","Extraordinary good work, documentation and attention to detail.","4_cohiba.gif"),
+	);
+	
+	var $kinds = Array(
+		1 => "Introduction",
+		2 => "Users manual",	// Target
+		3 => "Adminstration",
+		4 => "Configuration",
+		5 => "Tutorial",	// Target
+		6 => "Known problems",
+		7 => "To-Do list",
+	);
+	var $kinds_short = Array(
+		1 => "Intro.",
+		2 => "Users M.",	// Target
+		3 => "Admin.",
+		4 => "Config.",
+		5 => "Tutor.",	// Target
+		6 => "Kn. Prob.",
+		7 => "To-Do",
+	);
+	
+	var $docCats = Array(
+		0 => "Extension manuals",
+		1 => "Core documentation",
+		2 => "Tutorials",
+		3 => "Installation",
+		5 => "End-User Manuals",
+		4 => "Miscellaneous"
+	);
+	
+	var $docPage=0;
+	var $extPage=0;
+	var $annoPage=0;
+	
+		// Internal
+	var $cmp_hiddenFields=0;
+	var $toc_current = array();
+	var $saved_toc = array();
+	var $pairs=array();
+	var $oodoc_inKey="_doc";
+
+	var $linearToc=array();
+	var $linearTocOrder=array();
+	
+	var $ooDocObj;
+	var $ooDocObj_loaded="";
+	
+	var $oodoc_tempFile="";
+	var $oodoc_idKey="";
+
+	";i:1;i:-1;}s:12:"content_size";i:1715;s:13:"content_lines";i:61;s:6:"atLine";i:130;}i:3;a:7:{s:6:"header";s:31:"function main($content,$conf)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:15:"
+Main function
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:13:"$content: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:10:"$conf: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"			// Basic initialization
+		$this->basicInit($conf);
+
+		if ($this->dbPageId<=0)	{
+			$content='<p>You must add a reference to a page (called "Starting point") in the "Insert Plugin" content element. That page should be where Frontend Users and all repository records are stored.</p>';
+		} else {
+			switch($this->cObj->data["tx_extrepmgm_function"])	{
+				case 1:	// Registe
+[...]
+eak;
+				default:
+					$content = $this->listView();
+				break;
+			}
+		}
+
+		return $this->pi_wrapInBaseClass($content);
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:828;s:13:"content_lines";i:28;s:6:"atLine";i:199;}i:5;a:7:{s:6:"header";s:32:"function main2($content,$conf)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:84:"
+"Main2" is in control of CACHED USER cObjects - main() is designed to be USER_INT.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:13:"$content: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:10:"$conf: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:503:"		$this->basicInit($conf);
+		
+		switch($this->cObj->data["tx_extrepmgm_function"])	{
+			case 2:	// the Open Office document viewing. This is a CACHED 
+// LOADING oodoc class???		
+				if ($this->piVars["extUid"])	{
+					$content=$this->renderDocumentationForExtension();
+				} else {
+					$content=$this->renderMasterToc();
+				}
+			break;
+			case 4:
+				$content = $this->listUsers();
+			break;
+		}
+#debug($this->cObj->data["tx_extrepmgm_function"]);
+		return $this->pi_wrapInBaseClass($content);
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:503;s:13:"content_lines";i:19;s:6:"atLine";i:235;}i:7;a:7:{s:6:"header";s:27:"function basicInit($conf)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:32:"
+Doing very basic configuration
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:10:"$conf: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$this->dbPageId = $conf["pidList"] = intval($this->cObj->data["pages"]);
+		if (!$this->dbPageId)	{
+			$d=$GLOBALS["TSFE"]->getStorageSiterootPids();
+			$this->dbPageId = intval($d["_STORAGE_PID"]);
+		}
+#debug($this->dbPageId);
+
+		$conf["recursive"] = 0;
+		$this->conf = $conf;
+
+		$this->docPage=intval($this->conf["docPage"]);	//1387;
+		$this->extPage=intval($this->conf["e
+[...]
+***********************
+	 * 
+	 * 	LISTING of extensions
+	 * 
+	 *********************************************************/
+	
+	";i:1;i:1;}s:12:"content_size";i:886;s:13:"content_lines";i:41;s:6:"atLine";i:261;}i:9;a:8:{s:6:"header";s:21:"function listView()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:11:"sectionText";a:1:{i:0;s:21:"LISTING of extensions";}s:4:"cDat";a:3:{s:4:"text";s:136:"
+Listing the extensions in repository. Basically this is managing the mode menu in the top and calling other methods for the rendering.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$this->pi_setPiVarDefaults();
+		$this->pi_loadLL();		// Loading the LOCAL_LANG values
+		$this->pi_USER_INT_obj=1;	// Configuring so caching is not expected. This value means that no cHash params are ever set.
+		$lConf = $this->conf["listView."];	// Local settings for the listView function
+		
+		if ($this->piVars["showUid"])	{	// If a single element should be displayed:
+		
+[...]
+llTable.=$this->listMode_multi();
+				break;
+			}
+				// Returns the content from the plugin.
+			return $fullTable;
+		}
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:1995;s:13:"content_lines";i:57;s:6:"atLine";i:308;}i:11;a:7:{s:6:"header";s:27:"function listMode_multi()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:44:"
+Listing extensions by update/new property.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		switch($this->piVars["mode"])	{
+			case 3:
+				$content.='<h3>Popular by download</h3>';
+				$content.='<p>Showing the 20 most popular extension measured by download numbers.</p>';
+				if (!$this->piVars["alltime"])	{
+					$content.='<p>Showing <strong>all time downloads</strong>. '.$this->pi_linkTP_keepPIvars('Show downloads of most recent version.',array("alltime"=>1))
+[...]
+derExtensionHead().'
+					</table>';
+			}
+		}
+		
+		return '<DIV'.$this->pi_classParam("extList").'>'.$content.'</DIV>';
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:7495;s:13:"content_lines";i:157;s:6:"atLine";i:371;}i:13;a:7:{s:6:"header";s:32:"function listMode_categories()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:32:"
+Listing extensions by category
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"	
+			// Displaying the category table:
+		if (!strcmp($this->piVars["display_cat"],""))	{
+
+				// Selecting categories and displaying category table:
+			$query = "SELECT * FROM tx_extrepmgm_extgroup WHERE pid=".intval($this->dbPageId).
+						$this->cObj->enableFields("tx_extrepmgm_extgroup").
+						" ORDER BY title";
+			
+				// Select all available:
+			$array = $this->curre
+[...]
+->renderExtensionhead().'
+				</table>';
+		}
+		
+		return '<DIV'.$this->pi_classParam("extList").'>'.$content.'</DIV>';
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:6365;s:13:"content_lines";i:118;s:6:"atLine";i:534;}i:15;a:7:{s:6:"header";s:45:"function renderExtensionRow($rec,$crtime=0)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:68:"
+Render the extension info row for listing of categories, news etc.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$rec: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:12:"$crtime: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$infotable='<table '.$this->conf["listExt."]["tableParams_extInfoTbl"].$this->pi_classParam("extInfoTbl").'>
+			<tr><td nowrap'.$this->pi_classParam("HCell").'>Author:</td><td nowrap>'.$rec["emconf_author"].'</td></tr>
+			<tr><td nowrap'.$this->pi_classParam("HCell").'>Tech. Cat:</td><td nowrap>'.$this->categories[$rec["emconf_category"]].'</td></tr>
+			<tr><td nowrap'.$
+[...]
+"clear.gif" width=1 height='.intval($this->conf["listExt."]["entryVertDistance"]).'></td>
+			</tr>';
+		
+		return $item;
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:3075;s:13:"content_lines";i:59;s:6:"atLine";i:660;}i:17;a:7:{s:6:"header";s:34:"function linkDocPage($str,$eUid)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:24:"
+[Describe function...]
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$str: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:10:"$eUid: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:306:"		$urlParameters = array($this->prefixId."[extUid]"=>$eUid);
+		
+		$conf=array();
+		$conf["useCacheHash"]=1;
+		$conf["no_cache"]=0;
+		$conf["parameter"]=$this->docPage;
+		$conf["additionalParams"]=t3lib_div::implodeArrayForUrl("",$urlParameters,"",1);
+		
+		return $this->cObj->typoLink($str, $conf);
+	}	
+	
+	";i:1;i:0;}s:12:"content_size";i:306;s:13:"content_lines";i:11;s:6:"atLine";i:727;}i:19;a:7:{s:6:"header";s:32:"function renderExtensionhead()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:40:"
+Extension head, spacing out the table.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:314:"		$code = '<tr>
+			<td><img src="clear.gif" width=16 height=1></td>
+			<td><img src="clear.gif" width=200 height=1></td>
+			<td><img src="clear.gif" width=150 height=1></td>
+			<td><img src="clear.gif" width=50 height=1></td>
+			<td><img src="clear.gif" width=50 height=1></td>
+		</tr>';
+		return $code;	
+	}
+
+
+
+
+
+	";i:1;i:0;}s:12:"content_size";i:314;s:13:"content_lines";i:14;s:6:"atLine";i:744;}i:21;a:7:{s:6:"header";s:30:"function listMode_fullList()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:36:"
+Listing extensions like in the EM.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$content="";
+		if ($GLOBALS["TSFE"]->fe_user->user["uid"])	{
+			$content.='<p>Login status: You are authenticated as the user <strong>'.$GLOBALS["TSFE"]->fe_user->user["username"].'</strong> ('.$GLOBALS["TSFE"]->fe_user->user["name"].')</p>';
+		} else {
+			$content.='<p>Login status: You are not logged in.</p>';
+		}
+			
+			// Making menu:
+		$opt=array();
+		$opt[]='<optio
+[...]
+value="Set selection">' : '').
+			'</form>';
+	
+		return '<DIV'.$this->pi_classParam("fullList").'>'.$content.'</DIV>';
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:6445;s:13:"content_lines";i:134;s:6:"atLine";i:764;}i:23;a:7:{s:6:"header";s:28:"function listMode_myList()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:34:"
+Personal list of extension keys.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		if (isset($this->piVars["DATA"]["uploadPassword"]))	{
+			if ($GLOBALS["TSFE"]->loginUser)	{
+				if (!strcmp(trim($this->piVars["DATA"]["uploadPassword"]),trim($this->piVars["DATA"]["uploadPassword2"])))	{
+					if ($this->piVars["DATA"]["confirm"])	{
+						$query = "UPDATE tx_extrep_keytable SET upload_password='".addslashes(trim($this->piVars["DATA"]["uploadPassword"])).
+[...]
+lue="COMPARE"></p>
+			</form>';
+			
+
+
+			
+			
+		}
+		
+		return '<DIV'.$this->pi_classParam("myList").'>'.$out.'</DIV>';
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:11499;s:13:"content_lines";i:181;s:6:"atLine";i:904;}i:25;a:7:{s:6:"header";s:34:"function updateFeUserSelection()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:51:"
+This updates the fe_user selection of extensions.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"			// STORING THE SELECTION MADE BY THE USER:
+		if ($GLOBALS["TSFE"]->loginUser && $this->piVars["DATA"]["cmd_setSelection"])	{
+			$fe_user_uid = intval($GLOBALS["TSFE"]->fe_user->user["uid"]);
+			if ($fe_user_uid>0)	{
+				$currentArray = unserialize($GLOBALS["TSFE"]->fe_user->user["tx_extrepmgm_selext"]);
+				if (!is_array($currentArray))	$currentArray=array();
+				$curre
+[...]
+xt"])."' WHERE uid=".$fe_user_uid;
+				$res = mysql(TYPO3_db,$query);
+				echo mysql_error();
+#debug($query);
+			}
+		}
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:785;s:13:"content_lines";i:17;s:6:"atLine";i:1091;}i:27;a:7:{s:6:"header";s:31:"function validateUploadUser()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:51:"
+Returns the fe_user array if a user is logged in.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:143:"		if ($GLOBALS["TSFE"]->fe_user->user["uid"])	{
+			return $GLOBALS["TSFE"]->fe_user->user;
+		} else {
+			return "No user logged in";
+		}
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:143;s:13:"content_lines";i:7;s:6:"atLine";i:1114;}i:29;a:7:{s:6:"header";s:53:"function makeTableRowForFullList($rec,$listOnlySel)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:46:"
+Render table row for classic extension list.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$rec: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:17:"$listOnlySel: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$sel=0;
+		if (!$listOnlySel && $GLOBALS["TSFE"]->loginUser && !t3lib_div::inList("owner,member",$rec["_ACCESS"]))	{
+			$sel = in_array($rec["extension_uid"],$this->ext_feUserSelection);
+			$img = '<input type="checkbox" name="'.$this->prefixId.'[DATA][extkey]['.$rec["extension_uid"].']" value="1" style="width:12;height:12;"'.($sel?" CHECKED":"").'>';
+		} else {
+			$img =
+[...]
+ion"]:"&nbsp;").'</td>
+					<td>'.$this->states[$rec["emconf_state"]].'</td>
+				</tr>';
+			break;
+		}
+		return $tRow;
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:3164;s:13:"content_lines";i:68;s:6:"atLine";i:1129;}i:31;a:7:{s:6:"header";s:37:"function getLangStatVisual($extRow)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:165:"
+Returns a visual representation of the translation statistics for an extension row
+Requires $this->ext_langInfo to be loaded with the language info prior to calls.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extRow: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$infoArr_dat = unserialize($extRow["tx_extrepmgm_cache_infoarray"]);
+		if (is_array($infoArr_dat["translation_status"]))	{
+			$langStat=array();
+			reset($infoArr_dat["translation_status"]);
+			while(list($lK,$dat)=each($infoArr_dat["translation_status"]))	{
+				$langRec = $this->ext_langInfo[0][$lK];
+
+					// Find if user is chief or assistant or maybe owner:
+				$auth=
+[...]
+s($lK.': '.$content).'">'.($content=="*"?"*":"X").'</span>';
+			}
+		} else {
+			$langStat="-";
+		}
+		return $langStat;
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:1535;s:13:"content_lines";i:35;s:6:"atLine";i:1205;}i:33;a:7:{s:6:"header";s:37:"function makeTableHRowForFullList()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:54:"
+Render the header-rows for classic extension listing
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		
+		$tRow='<tr>
+				<td'.$this->pi_classParam("HCell").'>&nbsp;</td>
+				<td'.$this->pi_classParam("HCell").'>&nbsp;</td>
+				<td nowrap'.$this->pi_classParam("HCell").'>Title:</td>
+				<td nowrap'.$this->pi_classParam("HCell").'>Extension key:</td>
+				<td nowrap'.$this->pi_classParam("HCell").'>Version:</td>
+					'.($GLOBALS["TSFE"]->loginUser ? '<td nowrap'.$this->pi_c
+[...]
+************************
+	 * 
+	 *  EXT edit / display
+	 * 
+	 **********************************************************/
+	
+
+	";i:1;i:1;}s:12:"content_size";i:1134;s:13:"content_lines";i:49;s:6:"atLine";i:1246;}i:35;a:8:{s:6:"header";s:23:"function singleView()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:11:"sectionText";a:1:{i:0;s:18:"EXT edit / display";}s:4:"cDat";a:3:{s:4:"text";s:46:"
+Rendering the display of a single extension.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$this->pi_setPiVarDefaults();
+		$this->pi_loadLL();
+/*
+		if ($GLOBALS["TSFE"]->fe_user->user["uid"])	{
+			$logSt='<p>Login status: You are authenticated as the user <strong>'.$GLOBALS["TSFE"]->fe_user->user["username"].'</strong> ('.$GLOBALS["TSFE"]->fe_user->user["name"].')</p>';
+		} else {
+			$logSt='<p>Login status: You are not logged in.</p>';
+		}
+*/
+		$logSt="";
+
+		
+[...]
+"=>"")).'</P>';
+		
+		return '<DIV'.$this->pi_classParam("singleView").'>'.$content.'</DIV>'.$this->pi_getEditPanel();
+	}	
+	
+	";i:1;i:1;}s:12:"content_size";i:10941;s:13:"content_lines";i:243;s:6:"atLine";i:1301;}i:37;a:7:{s:6:"header";s:41:"function extensionDetails($extRepEntry)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:19:"
+Extension details
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:17:"$extRepEntry: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$datablob = unserialize(gzuncompress($extRepEntry["datablob"]));
+		unset($extRepEntry["datablob"]);
+		unset($extRepEntry["icondata"]);
+		
+		
+				// Putting it all together:			
+		$content='';
+		$content.='<tr>
+					<td nowrap valign="top"'.$this->pi_classParam("HCell").'>Ext. Key (Uid):</td>
+					<td>'.$extRepEntry["extension_key"].' ('.$extRepEntry["extension_uid"].')</t
+[...]
+nt; filename=".basename($this->piVars["DATA"]["dlFile"]));
+				echo $outContent;
+				exit;
+			}
+		}
+
+		return $content;
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:9702;s:13:"content_lines";i:226;s:6:"atLine";i:1551;}i:39;a:7:{s:6:"header";s:62:"function extInformationArray_dbReq($techInfo,$tableHeader=0)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:24:"
+[Describe function...]
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:14:"$techInfo: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:17:"$tableHeader: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:383:"		return nl2br(trim((is_array($techInfo["tables"])?($tableHeader?"\n\n<strong>Tables:</strong>\n":"").implode("\n",$techInfo["tables"]):"").
+				(is_array($techInfo["static"])?"\n\n<strong>Static tables:</strong>\n".implode("\n",$techInfo["static"]):"").
+				(is_array($techInfo["fields"])?"\n\n<strong>Additional fields:</strong>\n".implode("<HR>",$techInfo["fields"]):"")));
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:383;s:13:"content_lines";i:5;s:6:"atLine";i:1785;}i:41;a:7:{s:6:"header";s:66:"function linkToDocumentation($str,$extUid,$tocUid="",$anchor="")	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:39:"
+Makes a link to a documentation page.
+";s:5:"param";a:4:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$str: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:12:"$tocUid: ...";}i:3;a:2:{i:0;s:6:"[type]";i:1;s:12:"$anchor: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:470:"		$cache=1;
+		
+		$urlParameters=array("tx_extrepmgm_pi1"=>array(
+										"extUid"=>$extUid, 
+										"tocEl"=>$tocUid
+									));
+		$conf=array();
+		$conf["useCacheHash"]=$cache;
+		$conf["no_cache"]=!$cache;
+		$conf["parameter"]= $this->docPage.($anchor?"#".$anchor:"");
+		$conf["additionalParams"]=$this->conf["parent."]["addParams"].t3lib_div::implodeArrayForUrl("",$urlParameters,"",1).$this->pi_moreParams;
+		
+		return $this->cObj->typoLink($str, $conf);
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:470;s:13:"content_lines";i:15;s:6:"atLine";i:1800;}i:43;a:7:{s:6:"header";s:40:"function linkToExtension($str,$extUid)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:36:"
+Makes a link to an extension page.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$str: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:417:"		$cache=0;
+		
+		$urlParameters=array("tx_extrepmgm_pi1"=>array(
+										"showUid"=>$extUid
+									));
+		$conf=array();
+		$conf["useCacheHash"]=$cache;
+		$conf["no_cache"]=!$cache;
+		$conf["parameter"]= $this->extPage;
+		$conf["additionalParams"]=$this->conf["parent."]["addParams"].t3lib_div::implodeArrayForUrl("",$urlParameters,"",1).$this->pi_moreParams;
+		
+		return $this->cObj->typoLink($str, $conf);
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:417;s:13:"content_lines";i:14;s:6:"atLine";i:1823;}i:45;a:7:{s:6:"header";s:23:"function singleEdit()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:46:"
+Rendering the editing of a single extension.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$this->pi_setPiVarDefaults();
+		$this->pi_loadLL();
+
+		$backLink=$this->pi_linkTP_keepPIvars("|",array("cmd"=>""));
+		$backLink_url = $this->cObj->lastTypoLinkUrl;
+
+		if (!$GLOBALS["TSFE"]->fe_user->user["uid"] || strcmp($this->internal["currentRow"]["owner_fe_user"],$GLOBALS["TSFE"]->fe_user->user["uid"]))	{
+			return '<p>You are trying to edit this extension, but does 
+[...]
+$this->pi_classParam("dTbl").'>
+				'.implode(chr(10),$editTable).'
+				</table>
+			</form>';
+		}
+
+		return $content;
+	}	
+	
+	";i:1;i:1;}s:12:"content_size";i:29868;s:13:"content_lines";i:619;s:6:"atLine";i:1843;}i:47;a:7:{s:6:"header";s:21:"function feedback()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:15:"
+Feedback form
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"			// Admin info:
+		$adminRec = $this->pi_getRecord("fe_users",$this->internal["currentRow"]["owner_fe_user"]);
+
+		if (is_array($adminRec))	{
+			$defMsg='Hi '.$adminRec["name"].'
+
+...
+
+Best regards
+'.$GLOBALS["TSFE"]->fe_user->user["name"].' ('.$GLOBALS["TSFE"]->fe_user->user["username"].')';
+
+			if (is_array($this->piVars["DATA"]) && trim($this->piVars["DATA"]["comment"])
+[...]
+">
+				</form>';
+			
+			}
+		} else $content='<p>ERROR: There was no owner for this extension!</p>';
+		return $content;
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:3174;s:13:"content_lines";i:50;s:6:"atLine";i:2468;}i:49;a:7:{s:6:"header";s:25:"function mentorReview()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:15:"
+Mentor Review
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		if ($GLOBALS["TSFE"]->loginUser)	{
+				// If the user is a true reviewer/mentor:
+			$isRV = $GLOBALS["TSFE"]->fe_user->user["tx_extrepmgm_isreviewer"];
+
+				// Only Mentors can capture versions for review:
+			if ($isRV && is_array($this->piVars["DATA"]["capture"]))	{
+				reset($this->piVars["DATA"]["capture"]);
+				$uid = key($this->piVars["DATA"]["capture"]);
+				
+				$
+[...]
+f reviewing this extension.</p>';
+			}
+		} else $content = '<p>Error: You were not logged in.</p>';
+		return $content;
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:4773;s:13:"content_lines";i:100;s:6:"atLine";i:2524;}i:51;a:7:{s:6:"header";s:45:"function oodocReview($isOwner,$extRepEntry)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:29:"
+Open Office document Review
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:13:"$isOwner: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:17:"$extRepEntry: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$maxMB=3;
+		if ($GLOBALS["TSFE"]->loginUser && ($GLOBALS["TSFE"]->fe_user->user["tx_extrepmgm_isdocreviewer"] || $isOwner))	{
+			if ($GLOBALS["HTTP_POST_FILES"]["_oodoc_for_review"])	{
+				$fI=pathinfo($GLOBALS["HTTP_POST_FILES"]["_oodoc_for_review"]["name"]);
+				if (strtolower($fI["extension"])=="sxw")	{
+					if ($GLOBALS["HTTP_POST_FILES"]["_oodoc_for_review"]["size"]
+[...]
+try);
+					}
+				}
+			}
+		} else {
+			$content = '<p>Error: You are NOT a OOdoc reviewer!</p>';
+		}
+		return $content;
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:11062;s:13:"content_lines";i:223;s:6:"atLine";i:2632;}i:53;a:7:{s:6:"header";s:50:"function downloadDocument($showDat,$extRepEntry)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:19:"
+Download document
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:13:"$showDat: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:17:"$extRepEntry: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$content="";
+		$parts = explode("_",$showDat,2);
+		switch($parts[0])	{
+			case "rv":
+				$query = "SELECT * FROM tx_extrepmgm_oodocreview WHERE uid=".intval($parts[1]);
+				$res = mysql(TYPO3_db,$query);
+				if ($rvRec=mysql_fetch_assoc($res))	{
+					$fileRelName = "oodocreview_".$rvRec["oodoc_md5"].".sxw";
+					$content=$rvRec["oodoc"];
+				}
+			break;
+			case "ch":
+			
+[...]
+: ".$mimeType);
+			Header("Content-Disposition: attachment; filename=".$fileRelName);
+			echo $content;
+			exit;
+		}
+	}
+	
+	
+	";i:1;i:1;}s:12:"content_size";i:1299;s:13:"content_lines";i:48;s:6:"atLine";i:2863;}i:55;a:7:{s:6:"header";s:55:"function showPreviewOfDocument($showDat,$extRepEntry)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:66:"
+Displays the content of an open office writer file for preview-.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:13:"$showDat: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:17:"$extRepEntry: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$parts = explode("_",$showDat,2);
+		switch($parts[0])	{
+			case "rv":
+				$query = "SELECT * FROM tx_extrepmgm_oodocreview WHERE uid=".intval($parts[1]);
+				$res = mysql(TYPO3_db,$query);
+				if ($rvRec=mysql_fetch_assoc($res))	{
+					$fileRelName = "typo3temp/oodocreview_".$rvRec["oodoc_md5"].".sxw";
+					$tempFile = $DELETE_file = PATH_site.$fileRelName;
+					if (!is_
+[...]
+ temporary sxw file found in '".$tempFile."'"; // is_file
+		} else return "ERROR: Command not understood."; // is_file
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:10621;s:13:"content_lines";i:267;s:6:"atLine";i:2919;}i:57;a:7:{s:6:"header";s:31:"function translateExtension()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:53:"
+Makes the interface for translation of an extension
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		if ($row = $this->getLatestRepositoryEntry($this->internal["currentRow"]["uid"]))	{
+			$datStr = gzuncompress($row["datablob"]);
+			if (md5($datStr)==$row["datablob_md5"])	{
+				$dB = unserialize($datStr);
+					// Finding locallang.php files + manual HTML.
+				$LL=array();
+				while(list($file)=each($dB))	{	
+					if ($dB[$file]["LOCAL_LANG"])	{
+						$LL[]=$dB[$file];
+		
+[...]
+: MD5 hash did not match.</p>';
+		} else $content = '<p>Error: No repository entry was found.</p>';
+		return $content;
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:14055;s:13:"content_lines";i:286;s:6:"atLine";i:3192;}i:59;a:7:{s:6:"header";s:37:"function getUserName($fe_users_uid)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:41:"
+Returns the user name of a fe_users.uid
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:18:"$fe_users_uid: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:263:"		if (!isset($this->cache_fe_user_names[$fe_users_uid]))	{
+			$fe_user_rec = $this->pi_getRecord("fe_users", $fe_users_uid);
+			$this->cache_fe_user_names[$fe_users_uid] = "".$fe_user_rec["username"];
+		}
+		return $this->cache_fe_user_names[$fe_users_uid];
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:263;s:13:"content_lines";i:7;s:6:"atLine";i:3485;}i:61;a:7:{s:6:"header";s:84:"function translateSaveIncoming($fe_user_uid, $langkey, $fileName, $extKey, $LLarr)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:19:"
+Save translation.
+";s:5:"param";a:5:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:17:"$fe_user_uid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$langkey: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:14:"$fileName: ...";}i:3;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extKey: ...";}i:4;a:2:{i:0;s:6:"[type]";i:1;s:11:"$LLarr: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"			// If something is submitted and every else is OK:
+		if ($langkey && $fe_user_uid && $extKey)	{
+				// Storing incoming??
+			$langValues = $this->piVars["DATA"][$langkey];
+			if (is_array($langValues))	{
+				$dat=$this->getDataContent($fe_user_uid,$extKey,$langkey);
+
+					// Cleaning incoming
+				if (is_array($langValues))	{
+					reset($langValues);
+					while(list($k,$
+[...]
+"',".intval($this->dbPageId).")";
+#debug($query,1);
+				$res = mysql(TYPO3_db,$query);
+				echo mysql_error();
+			}
+		}
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:1560;s:13:"content_lines";i:44;s:6:"atLine";i:3503;}i:63;a:7:{s:6:"header";s:63:"function deletedUsedTranslationRecords($extKey,$langKeyArray)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:80:"
+Deletes the translation records for a number of languages of a certain ext_key
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extKey: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:18:"$langKeyArray: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:333:"		if (is_array($langKeyArray))	{
+			$query = "UPDATE tx_extrepmgm_langelements SET deleted_tstamp=".time()." WHERE
+							pid=".intval($this->dbPageId)."
+							AND extension_key='".addslashes($extKey)."' 
+							AND langkey IN ('".implode("','",$langKeyArray)."')";
+#debug(array($query));
+			$res = mysql(TYPO3_db,$query);
+		}
+	}
+
+	";i:1;i:0;}s:12:"content_size";i:333;s:13:"content_lines";i:10;s:6:"atLine";i:3555;}i:65;a:7:{s:6:"header";s:36:"function getIcon_state($extRepRow)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:64:"
+Returns the proper state image for the repository record given
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:15:"$extRepRow: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:301:"		return isset($this->states[$extRepRow["emconf_state"]]) ? 
+			'<img src="'.t3lib_extMgm::siteRelPath("extrep_mgm").'res/state_'.$extRepRow["emconf_state"].'.gif" width="109" height="17">' : 
+			'<img src="'.t3lib_extMgm::siteRelPath("extrep_mgm").'res/state_na.gif" width="109" height="17">';
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:301;s:13:"content_lines";i:5;s:6:"atLine";i:3572;}i:67;a:7:{s:6:"header";s:73:"function getIcon_review($extRepRow,$keyRow,$textMode=0,$dontShowPrev=0)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:72:"
+Returns the review image for the state of the repository record given.
+";s:5:"param";a:4:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:15:"$extRepRow: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:12:"$keyRow: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:14:"$textMode: ...";}i:3;a:2:{i:0;s:6:"[type]";i:1;s:18:"$dontShowPrev: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$review='';
+		$text='';
+		$dimmed=0;
+		if (!$keyRow["tx_extrepmgm_appr_flag"])	{
+			$stat = $extRepRow["tx_extrepmgm_appr_status"];
+			$revUser = $extRepRow["tx_extrepmgm_appr_fe_user"] ? $this->pi_getRecord("fe_users",$extRepRow["tx_extrepmgm_appr_fe_user"]) : "";
+
+			if (!$dontShowPrev && (!is_array($revUser) && !$stat))	{	// If no reviewer is set and if no status is s
+[...]
+***************
+	 * 
+	 *	Open Office document rendering
+	 * 
+	 **********************************************************/
+
+	";i:1;i:1;}s:12:"content_size";i:1893;s:13:"content_lines";i:60;s:6:"atLine";i:3587;}i:69;a:8:{s:6:"header";s:28:"function renderMasterToc()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:11:"sectionText";a:1:{i:0;s:30:"Open Office document rendering";}s:4:"cDat";a:3:{s:4:"text";s:36:"
+Rendering master table-of-contents
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"
+			// MAKE MENU:
+		$mItems =array();
+		$mItems[""]='Matrix';
+		$mItems["fullToc"]='Full TOC';
+
+		$topmenu='';
+		reset($mItems);
+		while(list($kk,$vv)=each($mItems))	{
+			$topmenu.='<td'.($this->piVars["show"]==$kk?$this->pi_classParam("SCell"):'').'>'.$this->pi_linkTP_keepPIvars(htmlentities($vv),array("show"=>$kk),1).'</td>';
+		}
+		$topmenu='<table '.$this->conf["toc."][
+[...]
+		<td>'.$totalTables.'</td>
+			</tr>
+		</table>';
+		
+		return '<div'.$this->pi_classParam("toc").'>'.$output.'</div>';
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:5685;s:13:"content_lines";i:173;s:6:"atLine";i:3653;}i:71;a:7:{s:6:"header";s:44:"function renderDocumentationForExtension()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:38:"
+Rendering OOW document for extension
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$currentUser = $this->validateUploadUser();
+		$extUid = intval($this->piVars["extUid"]);
+		
+		$sxwfile="doc/manual.sxw";
+
+		$query = "SELECT uid,members_only,owner_fe_user,extension_key,tx_extrepmgm_flags FROM tx_extrep_keytable WHERE uid=".$extUid.
+					$GLOBALS["TSFE"]->sys_page->enableFields("tx_extrep_keytable");
+		$res = mysql(TYPO3_db,$query);
+		
+		if ($row=mysql_f
+[...]
+sion "'.$extUid.'"</p>';
+		} else $content='<p>Error: Couldn\'t find extension "'.$extUid.'"</p>';
+
+		return $content;
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:5993;s:13:"content_lines";i:118;s:6:"atLine";i:3832;}i:73;a:7:{s:6:"header";s:71:"function renderOOdocSlice($extUid,$tocEl,$sameLevel=0,$offsetFirst=0)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:20:"
+Render oodoc slice
+";s:5:"param";a:4:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:11:"$tocEl: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:15:"$sameLevel: ...";}i:3;a:2:{i:0;s:6:"[type]";i:1;s:17:"$offsetFirst: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"#$pt=t3lib_div::milliseconds();
+			// Try cache first:
+		$cache_hash = hexdec(substr(md5($extUid.'|'.$tocEl.'|'.$sameLevel.'|'.$offsetFirst),0,7));
+#debug(array($extUid.'|'.$tocEl.'|'.$sameLevel.'|'.$offsetFirst,$cache_hash));
+		$query = "SELECT content FROM tx_extrepmgm_oodoccache WHERE cache_ref=".intval($cache_hash);
+		$res=mysql(TYPO3_db,$query);
+		if ($row=mysql_fetch
+[...]
+.$tempFile."'"; // is_file
+			} else return "ERROR: No toc-record by that UID for this extension uid"; // tocElRec
+		}
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:5377;s:13:"content_lines";i:109;s:6:"atLine";i:3960;}i:75;a:7:{s:6:"header";s:49:"function clearPageCacheForExtensionDoc($extUid)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:50:"
+Clears document page cache content for extension
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:162:"		$query = "DELETE FROM cache_pages WHERE page_id=".intval($this->docPage)." AND reg1=".intval($extUid);
+#debug($query);
+		$res = mysql (TYPO3_db, $query);
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:162;s:13:"content_lines";i:5;s:6:"atLine";i:4076;}i:77;a:7:{s:6:"header";s:37:"function clearOOsliceCache($extUid)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:62:"
+Clearing cache for OOdoc slices for a certain extension uid.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:149:"		$query = "DELETE FROM tx_extrepmgm_oodoccache WHERE document_unique_ref=".intval($extUid);
+#debug($query);
+		$res = mysql (TYPO3_db, $query);
+	}
+
+	";i:1;i:0;}s:12:"content_size";i:149;s:13:"content_lines";i:5;s:6:"atLine";i:4088;}i:79;a:7:{s:6:"header";s:35:"function getOOdoc($row2,$sxwfile)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:123:"
+Get the OOdocument $sxwfile (filename) from repository record $row2
+Returns blank string on success, otherwise error msg.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:10:"$row2: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$sxwfile: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$this->oodoc_tempFile="";
+		$this->oodoc_idKey="";
+
+		$datStr = gzuncompress($row2["datablob"]);
+		if (md5($datStr)==$row2["datablob_md5"])	{
+			$dB = unserialize($datStr);
+
+				// Finding the manual
+			if (is_array($dB[$sxwfile]))	{
+#				$fileRelName = "typo3temp/extrep_manual_".$dB[$sxwfile]["content_md5"].".sxw";
+				$fileRelName = "typo3temp/manual-".$row2["extension
+[...]
+		return $content;
+	}
+
+
+
+
+
+
+	// ***************************
+	// TSconfig Property Tables:
+	// ***************************
+	
+	";i:1;i:1;}s:12:"content_size";i:1430;s:13:"content_lines";i:45;s:6:"atLine";i:4102;}i:81;a:7:{s:6:"header";s:35:"function findOOdocTables($extUid)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:107:"
+Based on a loaded oo-document, this traverses the whole thing and finds all tables with TS properties in.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		if (t3lib_extMgm::isLoaded("tsconfig_help"))	{
+			$query = "DELETE FROM static_tsconfig_help WHERE guide=".intval($extUid);
+#debug(array($query));
+			$res = mysql(TYPO3_db,$query);
+			
+			reset($this->ooDocObj->officeBody);
+			while(list($k,$part)=each($this->ooDocObj->officeBody))	{
+				if ($part["tag"]=="TABLE:TABLE" && $this->ooDocObj->officeBody[$k+1]["tag"]=="TEXT:P
+[...]
+ableCode))."', '')";
+#debug(array($query));
+					$res = mysql(TYPO3_db,$query);
+					echo mysql_error();
+				}
+			}
+		}
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:1364;s:13:"content_lines";i:34;s:6:"atLine";i:4154;}i:83;a:7:{s:6:"header";s:46:"function getPropertyTable($tableCode,$all=0)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:24:"
+[Describe function...]
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:15:"$tableCode: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:9:"$all: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$parser = t3lib_div::makeInstance("t3lib_parsehtml");
+		$tableBody=$parser->getAllParts($parser->splitIntoBlock("tr",$tableCode,1),1,0);
+		
+		reset($tableBody);
+	
+			// Header:
+		$thParts = $parser->getAllParts($parser->splitIntoBlock("th",current($tableBody),1),1,0);
+		$colMap=array();
+		reset($thParts);
+		while(list($k,$thV)=each($thParts))	{
+			$thV = ereg_replace("[^
+[...]
+)
+						);
+					}
+				}
+			}
+			return $table;
+	//		echo printTable($table);
+		} else {
+			debug("Skipping table");
+		}
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:1722;s:13:"content_lines";i:49;s:6:"atLine";i:4196;}i:85;a:7:{s:6:"header";s:29:"function cleanUpText($text)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:24:"
+[Describe function...]
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:10:"$text: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:447:"		$parser = t3lib_div::makeInstance("t3lib_parsehtml");
+		$textBody=$parser->getAllParts($parser->splitIntoBlock("p,h1,h2,h3,h4,h5",$text,1),1,0);
+		
+		reset($textBody);
+		$lines=array();
+		while(list(,$v)=each($textBody))	{
+			$lines[]=str_replace(chr(10),"",str_replace("<br>",chr(10),$parser->stripTagsExcept(trim($v),"b,u,i,br,p")));
+		}
+		return implode(chr(10),$lines);
+	}
+
+
+
+
+
+
+	// *****************
+	// TOC stuff:
+	// *****************
+	
+	";i:1;i:0;}s:12:"content_size";i:447;s:13:"content_lines";i:20;s:6:"atLine";i:4252;}i:87;a:7:{s:6:"header";s:34:"function renderTOC($extUid,$toc)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:35:"
+Renderes the TOC for HTML display
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:9:"$toc: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$lines=array();
+		if (is_array($toc))	{
+			reset($toc);
+			while(list($uid,$tocRec)=each($toc))	{
+				$level = t3lib_div::intInRange($tocRec["hlevel"],1,3);
+				$title = $tocRec["num"].' '.$tocRec["title"];
+	
+				$tocUid = $tocRec["linkUid"]?$tocRec["linkUid"]:$tocRec["uid"];
+				$anchor="";
+				if ($tocRec["level3"])	{
+					$tocUid=$tocRec["level3"];
+					$anchor="oodoc
+[...]
+=0 cellpadding=0 cellspacing=0'.$this->pi_classParam("toctable").'>'.implode("",$lines).'</table>';
+		}
+		return $out;
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:1041;s:13:"content_lines";i:33;s:6:"atLine";i:4280;}i:89;a:7:{s:6:"header";s:39:"function renderTOC_main($extUid,$toc)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:44:"
+Renderes the TOC for main TOC HTML display
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:9:"$toc: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$lines=array();
+		if (is_array($toc))	{
+			reset($toc);
+			while(list($uid,$tocRec)=each($toc))	{
+				if ($tocRec["hlevel"]<3)	{
+					$level = t3lib_div::intInRange($tocRec["hlevel"],1,3);
+					$title = $tocRec["num"].' '.$tocRec["title"];
+		
+					$tocUid = $tocRec["linkUid"]?$tocRec["linkUid"]:$tocRec["uid"];
+					$anchor="";
+					if ($tocRec["level3"])	{
+						$tocUid=
+[...]
+llpadding=0 cellspacing=0'.$this->pi_classParam("toctable_main").'>'.implode("",$lines).'</table>';
+		}
+		return $out;
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:1203;s:13:"content_lines";i:38;s:6:"atLine";i:4321;}i:91;a:7:{s:6:"header";s:31:"function getAUDIcons($audInt)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:62:"
+Returns Image tags with the icons indicating audience flags.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$audInt: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$aud_text='';
+		$aud_text.=($audInt&1) ? '<img src="'.t3lib_extMgm::siteRelPath("extrep_mgm").'res/ta_users.gif" width="20" height="18" border="0" title="Users (content authors)" align="top">':'<img src="clear.gif" width=20 height=18 align="top">';
+		$aud_text.=($audInt&2) ? '<img src="'.t3lib_extMgm::siteRelPath("extrep_mgm").'res/ta_admins.gif" width="20" height="18" b
+[...]
+order="0" title="Developers" align="top">':'<img src="clear.gif" width=20 height=18 align="top">';
+		return $aud_text;
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:724;s:13:"content_lines";i:7;s:6:"atLine";i:4366;}i:93;a:7:{s:6:"header";s:102:"function prepareTOCdata($hToc,$path=array(),$num=array(),$nextSection=array(),$level3=0,$aud_prev=0)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:61:"
+Prepares a linear version of the toc from hierarchical data
+";s:5:"param";a:6:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:10:"$hToc: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:10:"$path: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:9:"$num: ...";}i:3;a:2:{i:0;s:6:"[type]";i:1;s:17:"$nextSection: ...";}i:4;a:2:{i:0;s:6:"[type]";i:1;s:12:"$level3: ...";}i:5;a:2:{i:0;s:6:"[type]";i:1;s:14:"$aud_prev: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		reset($hToc["hToc"]);
+		while(list($uid,$tocRec)=each($hToc["hToc"]))	{
+				// Finding data for this entry
+			$this->linearToc[$tocRec["dat"]["uid"]]=array(
+				"title" => $tocRec["dat"]["stripped_value"],
+				"next" => $tocRec["dat"]["stripped_next"],
+				"path" => implode(" > ",array_merge($path,array($tocRec["dat"]["stripped_value"]))),
+				"num" => implode(".",array_
+[...]
+		$this->linearToc[$tocRec["dat"]["uid"]]["linkUid"]=$tocRec["dat"]["uid"];
+			}
+			
+		}
+		return array($nextSection);
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:2177;s:13:"content_lines";i:56;s:6:"atLine";i:4385;}i:95;a:7:{s:6:"header";s:64:"function generateTOCforMetaData($extRepEntry,$sxwfile,$edit=0)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:76:"
+Makes the form of the TOC which is used to assign meta data to the entries
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:17:"$extRepEntry: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$sxwfile: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:10:"$edit: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$saved_toc = $this->getTOCfromSavedOOdoc($extRepEntry["extension_uid"],$sxwfile,1);
+		
+		$kinds=$this->kinds;
+		
+		$types=array(
+			1 => "FAQ",	// Target
+			2 => "Examples",
+			3 => "Reference",
+		);
+		
+		// FLAGS: faq, reference, examples
+
+		$docArray = unserialize($this->internal["currentRow"]["tx_extrepmgm_documentation"]);
+#debug($docArray);
+		
+		if (t3lib_extMgm::is
+[...]
+ud:</td>
+				<td'.$this->pi_classParam("HCell").'>Ann.</td>
+			</tr>
+		'.implode("",$lines).'</table>';
+		return $out;
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:5455;s:13:"content_lines";i:108;s:6:"atLine";i:4450;}i:97;a:7:{s:6:"header";s:54:"function generateDocumentForm($extRepEntry,$sxwfile)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:100:"
+This makes the interface for editing the TOC of a open Office document attached to this extension.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:17:"$extRepEntry: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$sxwfile: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$masterEl = $this->getTocPHElement($extRepEntry["extension_uid"],$sxwfile);
+#debug($masterEl);
+		if ($extRepEntry["is_manual_included"] != $masterEl["is_included_hash"])	{
+			$e = $this->getOOdoc($extRepEntry,$sxwfile);
+			if (!$e)	{
+				$this->toc_current = $this->makeTOCfromLoadedOOdoc();
+				$this->saved_toc = $this->getTOCfromSavedOOdoc($extRepEntry["extension_uid"],
+[...]
+ database TOC. Writing new content hash to TOC table.';
+					}
+				}
+			} else return 'ERROR: '.$e;
+		} else return 0;
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:5707;s:13:"content_lines";i:105;s:6:"atLine";i:4566;}i:99;a:7:{s:6:"header";s:35:"function makeTOCfromLoadedOOdoc()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:43:"
+Getting the TOC from the open office file
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$this->ooDocObj->prepareOfficeBodyArray();
+			// $this->ooDocObj->officeBody is an array of all "root-level" paragraphs
+#debug($this->ooDocObj->officeBody);
+		$toc=array();
+		$c=0;
+		reset($this->ooDocObj->officeBody);
+		while(list($index,$tagArray)=each($this->ooDocObj->officeBody))	{
+			if ($tagArray["tag"]=="TEXT:H" && t3lib_div::inList("1,2,3",$tagArray["attributes"]
+[...]
+				if (!strcmp($toc[$c]["stripped_next"],""))	unset($toc[$c]["stripped_next"]);
+			}
+		}
+#debug($toc);
+		return $toc;
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:1092;s:13:"content_lines";i:27;s:6:"atLine";i:4677;}i:101;a:7:{s:6:"header";s:64:"function updateTOCField($extUid,$sxwfile,$st_uid,$type,$field)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:18:"
+Update TOC field
+";s:5:"param";a:5:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$sxwfile: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:12:"$st_uid: ...";}i:3;a:2:{i:0;s:6:"[type]";i:1;s:10:"$type: ...";}i:4;a:2:{i:0;s:6:"[type]";i:1;s:11:"$field: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:303:"		$document_unique_ref = hexdec(substr(md5($extUid."|".$sxwfile),0,7));
+
+		$query="UPDATE tx_extrepmgm_oodoctocel SET 
+				".$field."='".$type."'
+				WHERE uid=".intval($st_uid)." 
+					AND document_unique_ref=".intval($document_unique_ref);
+		$res = mysql(TYPO3_db,$query);
+		echo mysql_error();
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:303;s:13:"content_lines";i:10;s:6:"atLine";i:4715;}i:103;a:7:{s:6:"header";s:57:"function updateInsertTOCph($extUid,$sxwfile,$isIncHash)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:41:"
+Updating or inserting a TOC placeholder
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$sxwfile: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:15:"$isIncHash: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$updateArr=array();
+		$updateArr["document_unique_ref"]=hexdec(substr(md5($extUid."|".$sxwfile),0,7));
+		$updateArr["is_included_hash"]=$isIncHash;
+		$updateArr["extension_uid"]=$extUid;
+		$updateArr["sxwfile"]=$sxwfile;
+		$updateArr["cur_tmp_file"]=substr($this->ooDocObj->file,strlen(PATH_site));
+		$updateArr["cur_oodoc_ref"]=$this->ooDocObj->ext_ID;
+		$updateArr["doc_s
+[...]
+-m-Y H:i:s",$updateArr["doc_mtime"]));
+//		cat tinyint(3) DEFAULT '0' NOT NULL,
+//		lang int(11) DEFAULT '0' NOT NULL,
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:4084;s:13:"content_lines";i:113;s:6:"atLine";i:4734;}i:105;a:7:{s:6:"header";s:44:"function updateCachedToc($extUid,$sxwfile)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:37:"
+Update the cached Table Of Contents
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$sxwfile: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$doc_uid = hexdec(substr(md5($extUid."|".$sxwfile),0,7));
+
+			// TOC cache:
+		$updateArr["toc_cache"]="";
+		$this->saved_toc = $this->getTOCfromSavedOOdoc($extUid,$sxwfile,1);
+		if (count($this->saved_toc))	{
+				// Prepare the TOC of this document:
+			$toc_hierarch = $this->makeHierarchyTOC($this->saved_toc,1,0);
+			$this->linearToc=array();
+			$this->linearTocOrder=arr
+[...]
+que_ref=".intval($doc_uid);
+#debug($query);
+		$res = mysql(TYPO3_db,$query);
+		echo mysql_error();
+#debug($updateArr);
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:810;s:13:"content_lines";i:26;s:6:"atLine";i:4855;}i:107;a:7:{s:6:"header";s:45:"function updateTocPH($extUid,$sxwfile,$dat)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:52:"
+Update trivial fields in the PlaceHolder TOC entry
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$sxwfile: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:9:"$dat: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:301:"		$doc_uid = hexdec(substr(md5($extUid."|".$sxwfile),0,7));
+		
+		$query="UPDATE tx_extrepmgm_oodoctoc SET 
+				cat=".intval($dat["cat"]).",
+				lang=".intval($dat["lang"])."
+				WHERE document_unique_ref=".intval($doc_uid);
+#debug($query);
+		$res = mysql(TYPO3_db,$query);
+		echo mysql_error();
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:301;s:13:"content_lines";i:11;s:6:"atLine";i:4890;}i:109;a:7:{s:6:"header";s:44:"function getTocPHElement($extUid,$sxwfile)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:23:"
+Select TOC PH element
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$sxwfile: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:249:"		$document_unique_ref = hexdec(substr(md5($extUid."|".$sxwfile),0,7));
+		$query="SELECT * FROM tx_extrepmgm_oodoctoc WHERE document_unique_ref=".intval($document_unique_ref);
+		$res = mysql(TYPO3_db,$query);
+		return mysql_fetch_assoc($res);
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:249;s:13:"content_lines";i:6;s:6:"atLine";i:4909;}i:111;a:7:{s:6:"header";s:47:"function deleteTocPHElement($extUid,$sxwfile)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:23:"
+Delete TOC PH element
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$sxwfile: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:213:"		$document_unique_ref = hexdec(substr(md5($extUid."|".$sxwfile),0,7));
+		$query="DELETE FROM tx_extrepmgm_oodoctoc WHERE document_unique_ref=".intval($document_unique_ref);
+		$res = mysql(TYPO3_db,$query);
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:213;s:13:"content_lines";i:5;s:6:"atLine";i:4923;}i:113;a:7:{s:6:"header";s:69:"function updateInsertTOCEntry($extUid,$sxwfile,$TOCarray,$st_uid=0)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:30:"
+Saving/Updating TOC elements
+";s:5:"param";a:4:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$sxwfile: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:14:"$TOCarray: ...";}i:3;a:2:{i:0;s:6:"[type]";i:1;s:12:"$st_uid: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$updateArr=array();
+		$updateArr["document_unique_ref"]=hexdec(substr(md5($extUid."|".$sxwfile),0,7));
+#		$updateArr["is_included_hash"]=$isIncHash;
+		$updateArr["extension_uid"]=$extUid;
+#		$updateArr["sxwfile"]=$sxwfile;
+#		$updateArr["cur_tmp_file"]=substr($this->ooDocObj->file,strlen(PATH_site));
+#		$updateArr["cur_oodoc_ref"]=$this->ooDocObj->ext_ID;
+
+#debug($TOCarr
+[...]
+("tx_extrepmgm_oodoctocel",$fp,$vp);
+		}
+#debug(array($query));
+		$res = mysql(TYPO3_db,$query);
+		echo mysql_error();
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:1429;s:13:"content_lines";i:46;s:6:"atLine";i:4938;}i:115;a:7:{s:6:"header";s:60:"function cleanUpOldOOdoc($oodoc_fileStorage_id, $tempFile)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:57:"
+Cleaning up old OOdoc file storage entry and temp-file.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:26:"$oodoc_fileStorage_id: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:14:"$tempFile: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:573:"#		debug(array($oodoc_fileStorage_id, $tempFile));
+
+			// Remove storage item from storage table.
+		$query = "DELETE FROM tx_oodocs_filestorage WHERE rel_id=".intval($oodoc_fileStorage_id);
+		$res = mysql(TYPO3_db,$query);
+		echo mysql_error();
+#debug(array($query));
+
+			// Remove temporary file:
+		$path = PATH_site.$tempFile;
+		if (!strstr($path,"..") && t3lib_div::isFirstPartOfStr($path,PATH_site."typo3temp/manual-"))	{
+			if (@is_file($path))	{
+				unlink($path);
+			} else debug("No file to delete: ".$path);
+		} else debug("Invalid path to delete: ".$path);
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:573;s:13:"content_lines";i:17;s:6:"atLine";i:4992;}i:117;a:7:{s:6:"header";s:53:"function buildCacheOfCurrentParts($extUid,$sxwfile)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:52:"
+Render all current parts of a oodoc - so cached...
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$sxwfile: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:427:"		// Clear current cache:
+		$this->clearOOsliceCache($extUid);
+#debug("CLEAR CACHE!");
+		// Traverse whole document to render it.
+		$parts = $this->getTOCfromSavedOOdoc($extUid,$sxwfile,1);
+		reset($parts);
+		while(list($uid)=each($parts))	{
+#debug(array($extUid,$uid));
+			$this->renderOOdocSlice($extUid,$uid,0,1);
+#debug($e);
+		}
+
+			// Make information for the tsconfig-online help.
+		$this->findOOdocTables($extUid);
+	}
+
+	";i:1;i:0;}s:12:"content_size";i:427;s:13:"content_lines";i:16;s:6:"atLine";i:5017;}i:119;a:7:{s:6:"header";s:60:"function getTOCfromSavedOOdoc($extUid,$sxwfile,$noZeros=0)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:39:"
+Get the current TOC from the database
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extUid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$sxwfile: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:13:"$noZeros: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:565:"		$document_unique_ref = hexdec(substr(md5($extUid."|".$sxwfile),0,7));
+		$query="SELECT * FROM tx_extrepmgm_oodoctocel WHERE 
+			document_unique_ref=".$document_unique_ref.
+			($noZeros?" AND arr_key>0":"").
+			" ORDER BY arr_key";
+		$res = mysql(TYPO3_db,$query);
+
+		$toc=array();		
+		$lastRecUid=0;
+		while($row=mysql_fetch_assoc($res))	{
+			$row["level"]=$row["hlevel"];
+			$toc[$row["uid"]]=$row;
+			
+			if (isset($toc[$lastRecUid]))	{
+				$toc[$lastRecUid]["_next_xmlarr_index"]=$row["xmlarr_index"];
+			}
+			$lastRecUid=$row["uid"];
+		}
+		return $toc;
+	}
+	
+	";i:1;i:0;}s:12:"content_size";i:565;s:13:"content_lines";i:21;s:6:"atLine";i:5042;}i:121;a:7:{s:6:"header";s:49:"function makeHierarchyTOC($toc,$level=0,$cmp=0)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:20:"
+Make Hierarchy TOC
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$toc: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:11:"$level: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:9:"$cmp: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$hToc=array();
+		$dat=array();
+		$lC=0;
+		reset($toc);
+		while(list(,$cT)=each($toc))	{
+			if ($cmp)	$cT=array("stripped_value"=>$cT["stripped_value"],"level"=>$cT["level"]);
+			if ($cT["level"]>$level)	{
+				$hToc[$lC]["sub"][]=$cT;
+			} else {
+				$lC++;
+				$hToc[$lC]["dat"]=$cT;
+				$dat[]=$cT;
+			}
+		}
+		
+			// Subs...
+		reset($hToc);
+		while(list($k,$v)=each($hToc)
+[...]
+b_md5"]=md5(serialize($hToc[$k]["sub"]));
+			}
+		}
+		
+		return array("hToc" => $hToc,"dat_md5"=>md5(serialize($dat)));
+	}
+	
+	";i:1;i:1;}s:12:"content_size";i:635;s:13:"content_lines";i:27;s:6:"atLine";i:5072;}i:123;a:7:{s:6:"header";s:90:"function cmpArrays($hToc_curDoc,$hToc_saved,$hToc_curDoc_full,$hToc_saved_full,$level=0)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:16:"
+Compare Arrays
+";s:5:"param";a:5:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:17:"$hToc_curDoc: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:16:"$hToc_saved: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:22:"$hToc_curDoc_full: ...";}i:3;a:2:{i:0;s:6:"[type]";i:1;s:21:"$hToc_saved_full: ...";}i:4;a:2:{i:0;s:6:"[type]";i:1;s:11:"$level: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"#debug($hToc_curDoc_full);
+
+		$cmp_content="";
+
+
+			// OK, now searching for the right connection:
+		$pairs=array();
+
+		
+
+
+			// First, look for submissions
+		reset($hToc_curDoc["hToc"]);
+		while(list($k,$dat)=each($hToc_curDoc["hToc"]))	{
+			$realK=$hToc_curDoc_full["hToc"][$k]["dat"]["keynum"];
+			if (isset($this->piVars["DATA"][$this->oodoc_inKey][$realK]))	{	//  && $th
+[...]
+********************************
+	 * 
+	 * 	User listing
+	 * 
+	 **********************************************************/
+
+	";i:1;i:1;}s:12:"content_size";i:5044;s:13:"content_lines";i:155;s:6:"atLine";i:5110;}i:125;a:8:{s:6:"header";s:22:"function listUsers()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:11:"sectionText";a:1:{i:0;s:12:"User listing";}s:4:"cDat";a:3:{s:4:"text";s:83:"
+Output the list of users who has contributed in some way
+
+This is CACHED content!
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$userArray=array();
+
+			// Special flags and assigned jobs:
+		$query = "SELECT * FROM fe_users WHERE ".
+					"pid=".intval($this->dbPageId).
+					" AND (tx_extrepmgm_isreviewer>0 OR tx_extrepmgm_isdocreviewer>0 OR tx_extrepmgm_jobs!='' OR tx_extrepmgm_contribute)".
+					$this->cObj->enableFields("fe_users").
+					" ORDER BY crdate";
+		$res = mysql(TYPO3_db,$query);
+		whi
+[...]
+***************************
+	 *
+	 * 	Translator listing
+	 * 
+	 **********************************************************/
+
+	";i:1;i:1;}s:12:"content_size";i:8140;s:13:"content_lines";i:250;s:6:"atLine";i:5273;}i:127;a:8:{s:6:"header";s:29:"function listTranslations()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:11:"sectionText";a:1:{i:0;s:18:"Translator listing";}s:4:"cDat";a:3:{s:4:"text";s:32:"
+Output the list of translators
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"			// EDITING/MANAGEMENT of the languages
+		if ($this->piVars["langUid"])	{
+			$langRec = $this->pi_getRecord("tx_extrepmgm_langadmin",$this->piVars["langUid"]);
+			if ($GLOBALS["TSFE"]->loginUser && is_array($langRec) && !strcmp($GLOBALS["TSFE"]->fe_user->user["uid"],$langRec["auth_translator"]))	{
+
+					// If a change is sent:
+				if ($this->piVars["DATA"]["submit"])	{
+	
+[...]
+********************
+	 * 
+	 * 	Register extension key...
+	 * 
+	 *********************************************************/
+
+	";i:1;i:1;}s:12:"content_size";i:6609;s:13:"content_lines";i:181;s:6:"atLine";i:5529;}i:129;a:8:{s:6:"header";s:30:"function registerExtension()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:11:"sectionText";a:1:{i:0;s:25:"Register extension key...";}s:4:"cDat";a:3:{s:4:"text";s:40:"
+Output the registration HTML form etc.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"
+		list($OK,$errors) = $this->validateSubmittedKey();
+		$extKey = trim($this->piData["regKey"]);
+
+		if ($OK)	{
+			if ($this->piData["registerNow"] && 
+				trim($this->piData["field_title"]) )	{
+				
+				$this->registerKeyFromPIData();
+
+				$content.='<p>You have now registered the key "'.$extKey.'"</p>
+					<p>It will be released in 10 days if you do not upload an extensio
+[...]
+->cmdHiddenField().'</p>
+				</form>
+			';
+		}
+		
+		return '<DIV'.$this->pi_classParam("regkey").'>'.$content.'</DIV>';
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:7095;s:13:"content_lines";i:109;s:6:"atLine";i:5716;}i:131;a:7:{s:6:"header";s:34:"function registerKeyFromPIData()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:132:"
+Based on input in the piVar array, this input is stored in the keytable. So this function is used to register a new extension key.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:557:"		$dataArr=array(
+			"title" => trim($this->piData["field_title"]),
+			"description" => trim($this->piData["field_description"]),
+			"extension_key" => trim($this->piData["regKey"]),
+			"extension_key_modules" => trim(str_replace("_","",$this->piData["regKey"])),
+			"owner_fe_user" => $this->piData["owner_fe_user"],
+			"members_only" => 1,
+			"upload_password" => trim($this->piData["field_up"])
+		);
+		$q = $this->cObj->DBgetInsert("tx_extrep_keytable", $this->dbPageId, $dataArr, implode(",",array_keys($dataArr)), 1);
+		$res = mysql(TYPO3_db,$q);
+	}
+
+	";i:1;i:0;}s:12:"content_size";i:557;s:13:"content_lines";i:13;s:6:"atLine";i:5831;}i:133;a:7:{s:6:"header";s:29:"function randomWordPrefix()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:48:"
+Does its best to return a random word to us...
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:325:"		$uId = uniqid(rand(),1);
+		
+		for($a=0;$a<40;$a++)	{
+			$uString.=strtolower(chr(rand(65,65+25)));
+		}
+
+		$K_letters=ereg_replace("[eyuioa]","",$uString);
+		$A_letters=ereg_replace("[^eyuioa]","",$uString);
+		$letters=$uString;
+
+		$str=$K_letters[0].$A_letters[1].$letters[2].$A_letters[3].$letters[4];
+		return $str;
+	}
+
+	";i:1;i:0;}s:12:"content_size";i:325;s:13:"content_lines";i:14;s:6:"atLine";i:5850;}i:135;a:7:{s:6:"header";s:33:"function validateSubmittedKey()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:75:"
+Validates the piData[regKey] content and returns an array with the status
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:420:"		if ($this->piData["regKey"])	{
+			$extKey = trim($this->piData["regKey"]);
+			$res = $this->validateExtensionKey($extKey);
+			if (is_array($res))	{
+				$content.="<ul><li>".implode("</li><li>",$res)."</li></ul>";
+			} else {
+				if (is_array($this->checkUniquenessOfKey($extKey)))	{
+					$content.="<p>Error: Key was registered already!</p>";
+				} else {
+					$OK=1;
+				}
+			}
+		}
+		return array($OK,$content);
+	}
+
+	";i:1;i:0;}s:12:"content_size";i:420;s:13:"content_lines";i:16;s:6:"atLine";i:5870;}i:137;a:7:{s:6:"header";s:40:"function validateExtensionKey($extKey)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:153:"
+Input is a string and output is also a string if the input complies with the rules for extension keys. Otherwise it's an array with the error messages.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extKey: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$errors=array();
+		$extKey_module = str_replace("_","",$extKey);
+			// Check characters used:
+		if (ereg("[^a-z0-9_]",$extKey,$reg))	{
+			$errors[]="Extension keys cannot contain characters apart from a-z (lowercase), 0-9 and '_' (underscore)";
+		}
+
+			// Check characters used:
+		if (ereg("^[0-9_]",$extKey,$reg) || ereg("[_]$",$extKey,$reg))	{
+			$errors[]="Extension key
+[...]
+efixed with any prefixes from this list: <em>".$pList."</em>";
+			}
+		}
+		
+		return count($errors) ? $errors : $extKey;
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:1087;s:13:"content_lines";i:29;s:6:"atLine";i:5893;}i:139;a:7:{s:6:"header";s:40:"function checkUniquenessOfKey($extKey)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:40:"
+Checks if the extension key is unique.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$extKey: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:398:"		$extKey_module = str_replace("_","",$extKey);
+		$query = "SELECT uid FROM tx_extrep_keytable WHERE pid=".intval($this->dbPageId)." AND (extension_key='".addslashes($extKey)."' OR extension_key_modules='".addslashes($extKey_module)."')".$GLOBALS["TSFE"]->sys_page->deleteClause("tx_extrep_keytable");
+		$res = mysql(TYPO3_db,$query);
+		if ($row=mysql_fetch_assoc($res))	{
+			return $row;
+		}
+	}
+
+	";i:1;i:0;}s:12:"content_size";i:398;s:13:"content_lines";i:8;s:6:"atLine";i:5929;}i:141;a:7:{s:6:"header";s:23:"function checkLogin()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:115:"
+Checks if a user is logged in, and if so returns 1 and returns 2 if the fe_users pid is different from ->dbPageId
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:156:"		if (!$GLOBALS["TSFE"]->loginUser)	{
+			return 1;
+		} elseif ($GLOBALS["TSFE"]->fe_user->user["pid"]!=$this->dbPageId) {
+			return 2;
+		}
+		return 0;
+	}
+
+	";i:1;i:0;}s:12:"content_size";i:156;s:13:"content_lines";i:8;s:6:"atLine";i:5943;}i:143;a:7:{s:6:"header";s:36:"function linkThisCmd($uPA=array())	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:65:"
+Getting link to this page + extra parameters, we have specified
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$uPA: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:170:"		$uP = t3lib_div::implodeArrayForUrl($this->varPrefix,array_merge(array("cmd"=>$this->currentCMD),$uPA));
+		$url = $this->cObj->currentPageUrl($uP);
+		return $url;
+	}
+
+	";i:1;i:0;}s:12:"content_size";i:170;s:13:"content_lines";i:5;s:6:"atLine";i:5958;}i:145;a:7:{s:6:"header";s:28:"function piFieldName($key)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:30:"
+Returns name for form fields
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$key: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:45:"		return $this->varPrefix."[".$key."]";
+	}
+
+	";i:1;i:0;}s:12:"content_size";i:45;s:13:"content_lines";i:3;s:6:"atLine";i:5970;}i:147;a:7:{s:6:"header";s:27:"function cmdHiddenField()	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:28:"
+Get hidden field for "cmd"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:144:"		return '<input type="hidden"  name="'.$this->piFieldName("cmd").'" value="'.htmlspecialchars($this->currentCMD).'">';
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	";i:1;i:0;}s:12:"content_size";i:144;s:13:"content_lines";i:22;s:6:"atLine";i:5979;}i:149;a:4:{s:6:"header";s:47:"function pi_list_modeSelector($items=array())	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:53:"
+Returns a list mode selector, clickmenu in a table.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:11:"$items: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:6:"atLine";i:6008;}i:151;a:7:{s:6:"header";s:42:"function _temp_get_oodoc_element($tocEl)	{";s:11:"parentClass";s:16:"tx_extrepmgm_pi1";s:4:"cDat";a:3:{s:4:"text";s:20:"
+Render oodoc slice
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:11:"$tocEl: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$query='SELECT tx_extrepmgm_oodoctocel.*,tx_extrepmgm_oodoctoc.cur_tmp_file 
+				FROM tx_extrepmgm_oodoctocel,tx_extrepmgm_oodoctoc 
+				WHERE tx_extrepmgm_oodoctocel.document_unique_ref = tx_extrepmgm_oodoctoc.document_unique_ref
+				AND tx_extrepmgm_oodoctocel.uid='.intval($tocEl);
+		$res = mysql(TYPO3_db,$query);
+		echo mysql_error();
+		if ($tocElRec=mysql_fetch_assoc
+[...]
+gm_pi1.php"])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/extrep_mgm/pi1/class.tx_extrepmgm_pi1.php"]);
+}
+
+?>";i:1;i:1;}s:12:"content_size";i:2084;s:13:"content_lines";i:50;s:6:"atLine";i:6031;}}}}}
