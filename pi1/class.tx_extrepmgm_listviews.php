@@ -92,7 +92,7 @@ class tx_extrepmgm_listviews extends tx_extrepmgm_pi1 {
 
 		$this->pi_linkTP('|',Array($this->prefixId=>array('mode'=>99)));
 		$fullTable.='<p><form action="'.$this->cObj->lastTypoLinkUrl.'" style="margin: 0px 0px 0px 0px;" method="POST">
-			<input type="text" name="'.$this->prefixId.'[DATA][sword]" value="'.htmlentities($this->piVars['DATA']['sword']).'" title="'.htmlentities('Enter extension key, uid or search words.').'"><input type="submit" name="-" value="Search">
+			<input type="text" name="'.$this->prefixId.'[DATA][sword]" value="'.htmlspecialchars($this->piVars["DATA"]["sword"]).'" title="'.htmlspecialchars('Enter extension key, uid or search words.').'"><input type="submit" name="-" value="Search">
 			</form></p>';
 
 		switch($this->piVars['mode'])	{
@@ -316,8 +316,8 @@ class tx_extrepmgm_listviews extends tx_extrepmgm_pi1 {
 				list($count) = mysql_fetch_row($res2);
 
 				$col[floor($c/$numRows)][]='
-					<tr><td'.$this->pi_classParam('catHead').'>'.$this->pi_linkTP_keepPIvars($row['title'],array('display_cat'=>$row['uid'])).' ('.$count.')</td></tr>
-					<tr><td><p>'.htmlentities($row['descr']).'</p></td></tr>
+					<tr><td'.$this->pi_classParam("catHead").'>'.$this->pi_linkTP_keepPIvars($row["title"],array("display_cat"=>$row["uid"])).' ('.$count.')</td></tr>
+					<tr><td><p>'.htmlspecialchars($row["descr"]).'</p></td></tr>
 					';
 				$c++;
 			}
@@ -351,9 +351,9 @@ class tx_extrepmgm_listviews extends tx_extrepmgm_pi1 {
 			$opt=array();
 			$res = mysql(TYPO3_db,$query);
 			while($row=mysql_fetch_assoc($res))	{
-				$opt[]='<option value="'.htmlentities($this->pi_linkTP_keepPIvars_url(array('display_cat'=>$row['uid']))).'"'.($row['uid']==$this->piVars['display_cat']?" SELECTED":"").'>'.htmlentities($row['title']).'</option>';
+				$opt[]='<option value="'.htmlspecialchars($GLOBALS['TSFE']->baseUrl.$this->pi_linkTP_keepPIvars_url(array("display_cat"=>$row["uid"]))).'"'.($row["uid"]==$this->piVars["display_cat"]?" SELECTED":"").'>'.htmlspecialchars($row["title"]).'</option>';
 			}
-			$opt[]='<option value="'.htmlentities($this->pi_linkTP_keepPIvars_url(array('display_cat'=>0))).'"'.(!$this->piVars['display_cat']?" SELECTED":"").'>'.htmlentities('No category').'</option>';
+			$opt[]='<option value="'.htmlspecialchars($GLOBALS['TSFE']->baseUrl.$this->pi_linkTP_keepPIvars_url(array("display_cat"=>0))).'"'.(!$this->piVars["display_cat"]?" SELECTED":"").'>'.htmlspecialchars("No category").'</option>';
 
 
 				// Getting and displaying current category:
@@ -436,7 +436,7 @@ class tx_extrepmgm_listviews extends tx_extrepmgm_pi1 {
 		$item.='<tr>
 				<td>&nbsp;</td>
 				<td valign=top>'.$infotable.'</td>
-				<td colspan=2 valign=top><p'.$this->pi_classParam('descr').'>'.trim(htmlentities($rec['_EXTKEY_ROW']['description'])).'</p></td>
+				<td colspan=2 valign=top><p'.$this->pi_classParam("descr").'>'.trim(htmlspecialchars($rec["_EXTKEY_ROW"]["description"])).'</p></td>
 			</tr>';
 
 #debug($rec['_EXTKEY_ROW']);
@@ -524,19 +524,19 @@ class tx_extrepmgm_listviews extends tx_extrepmgm_pi1 {
 
 			// Making menu:
 		$opt=array();
-		$opt[]='<option value="'.htmlentities($this->pi_linkTP_keepPIvars_url(array('orderby'=>''))).'">Technical Category</option>';
-		$opt[]='<option value="'.htmlentities($this->pi_linkTP_keepPIvars_url(array('orderby'=>'author'))).'"'.($this->piVars['orderby']=="author"?" SELECTED":"").'>Author</option>';
-		$opt[]='<option value="'.htmlentities($this->pi_linkTP_keepPIvars_url(array('orderby'=>'state'))).'"'.($this->piVars['orderby']=="state"?" SELECTED":"").'>State</option>';
-		$menu = '<select onChange="document.location=this.options[this.selectedIndex].value;">'.implode('',$opt).'</select>';
+		$opt[]='<option value="'.htmlspecialchars($GLOBALS['TSFE']->baseUrl.$this->pi_linkTP_keepPIvars_url(array("orderby"=>""))).'">Technical Category</option>';
+		$opt[]='<option value="'.htmlspecialchars($GLOBALS['TSFE']->baseUrl.$this->pi_linkTP_keepPIvars_url(array("orderby"=>"author"))).'"'.($this->piVars["orderby"]=="author"?" SELECTED":"").'>Author</option>';
+		$opt[]='<option value="'.htmlspecialchars($GLOBALS['TSFE']->baseUrl.$this->pi_linkTP_keepPIvars_url(array("orderby"=>"state"))).'"'.($this->piVars["orderby"]=="state"?" SELECTED":"").'>State</option>';
+		$menu = '<select onChange="document.location=this.options[this.selectedIndex].value;">'.implode("",$opt).'</select>';
 
 			// Making show menu:
 		$opt=array();
-		$opt[]='<option value="'.htmlentities($this->pi_linkTP_keepPIvars_url(array('show'=>''))).'">Details</option>';
-		$opt[]='<option value="'.htmlentities($this->pi_linkTP_keepPIvars_url(array('show'=>'langdoc'))).'"'.($this->piVars['show']=="langdoc"?" SELECTED":"").'>Lang./Doc.</option>';
-		$menu2 = '<select onChange="document.location=this.options[this.selectedIndex].value;">'.implode('',$opt).'</select>';
+		$opt[]='<option value="'.htmlspecialchars($GLOBALS['TSFE']->baseUrl.$this->pi_linkTP_keepPIvars_url(array("show"=>""))).'">Details</option>';
+		$opt[]='<option value="'.htmlspecialchars($GLOBALS['TSFE']->baseUrl.$this->pi_linkTP_keepPIvars_url(array("show"=>"langdoc"))).'"'.($this->piVars["show"]=="langdoc"?" SELECTED":"").'>Lang./Doc.</option>';
+		$menu2 = '<select onChange="document.location=this.options[this.selectedIndex].value;">'.implode("",$opt).'</select>';
 
 		$content.='<p>'.
-			($GLOBALS['TSFE']->fe_user->user['uid']?'Get own/member/selected extensions only: <input type="checkbox" name="_" value="'.htmlentities($this->pi_linkTP_keepPIvars_url(array('own_mem_sel'=>$this->piVars['own_mem_sel']?"":1))).'" onClick="document.location=this.value;"'.($this->piVars['own_mem_sel']?" CHECKED":"").'>&nbsp;&nbsp;':'').
+			($GLOBALS["TSFE"]->fe_user->user["uid"]?'Get own/member/selected extensions only: <input type="checkbox" name="_" value="'.htmlspecialchars($GLOBALS['TSFE']->baseUrl.$this->pi_linkTP_keepPIvars_url(array("own_mem_sel"=>$this->piVars["own_mem_sel"]?"":1))).'" onClick="document.location=this.value;"'.($this->piVars["own_mem_sel"]?" CHECKED":"").'>&nbsp;&nbsp;':'').
 			'Order by: '.$menu.
 			' Show: '.$menu2.
 			'</p>';
@@ -669,7 +669,7 @@ class tx_extrepmgm_listviews extends tx_extrepmgm_pi1 {
 					} else $out='<p>Error: You didn\'t check off the confirm check box.</p>';
 				} else $out='<p>Error: The two passwords did not match each other!</p>';
 			} else $out='<p>Error: You are not logged in as any user.</p>';
-			$out.='<p>'.$this->pi_linkTP_keepPIvars(htmlentities('Back to list')).'</p>';
+			$out.='<p>'.$this->pi_linkTP_keepPIvars(htmlspecialchars("Back to list")).'</p>';
 		} else {
 			// Extension key comparison:
 			if (trim($this->piVars['DATA']['cmp_extkeys']))	{
@@ -739,30 +739,30 @@ class tx_extrepmgm_listviews extends tx_extrepmgm_pi1 {
 				} else $params='';
 
 				if ($repMode)	{
-					$items[]='<tr'.($c%2?'':$this->pi_classParam('oddRow')).'>
-						<td nowrap>'.$this->pi_linkTP_keepPIvars(htmlentities($row['title']),array('showUid'=>$row['uid'],'cmd'=>'edit')).'</td>
-						<td nowrap'.$params.'>'.($params?"** &nbsp;":"").$row['extension_key'].'</td>
-						<td nowrap>'.date('d-m-Y',$row['crdate']).'</td>
-						<td nowrap align="center">'.($row['rep_latest']?date('d-m-Y',$row['rep_latest']):'-').'</td>
-						<td nowrap align="center">'.($row['rep_uid']?$row['rep_count']:"-").'</td>
-						<td nowrap align="center">'.($row['download_counter']?$row['download_counter']:"-").'</td>
-						<td nowrap align="center">'.substr(md5($row['upload_password']),0,4).'</td>
-						<td nowrap align="center">'.$row['tx_extrepmgm_cache_state'].'</td>
+					$items[]='<tr'.($c%2?'':$this->pi_classParam("oddRow")).'>
+						<td nowrap>'.$this->pi_linkTP_keepPIvars(htmlspecialchars($row["title"]),array("showUid"=>$row["uid"],"cmd"=>"edit")).'</td>
+						<td nowrap'.$params.'>'.($params?"** &nbsp;":"").$row["extension_key"].'</td>
+						<td nowrap>'.date("d-m-Y",$row["crdate"]).'</td>
+						<td nowrap align="center">'.($row["rep_latest"]?date("d-m-Y",$row["rep_latest"]):'-').'</td>
+						<td nowrap align="center">'.($row["rep_uid"]?$row["rep_count"]:"-").'</td>
+						<td nowrap align="center">'.($row["download_counter"]?$row["download_counter"]:"-").'</td>
+						<td nowrap align="center">'.substr(md5($row["upload_password"]),0,4).'</td>
+						<td nowrap align="center">'.$row["tx_extrepmgm_cache_state"].'</td>
 					</tr>';
 				} else {
-					$items[]='<tr'.($c%2?'':$this->pi_classParam('oddRow')).'>
-						<td>'.$this->pi_linkTP_keepPIvars(htmlentities($row['title']),array('showUid'=>$row['uid'],'cmd'=>'edit')).'</td>
-						<td nowrap'.$params.'>'.($params?"** &nbsp;":"").$row['extension_key'].'</td>
-						<td nowrap align="center">'.($row['members_only']?"YES":"-").'</td>
-						<td nowrap align="center">'.($row['rep_uid']?$row['rep_count']:"-").'</td>
+					$items[]='<tr'.($c%2?'':$this->pi_classParam("oddRow")).'>
+						<td>'.$this->pi_linkTP_keepPIvars(htmlspecialchars($row["title"]),array("showUid"=>$row["uid"],"cmd"=>"edit")).'</td>
+						<td nowrap'.$params.'>'.($params?"** &nbsp;":"").$row["extension_key"].'</td>
+						<td nowrap align="center">'.($row["members_only"]?"YES":"-").'</td>
+						<td nowrap align="center">'.($row["rep_uid"]?$row["rep_count"]:"-").'</td>
 					</tr>';
 				}
 				$c++;
 	#			debug($row);
 			}
 
-			$out='';
-			$out.='<p>'.$this->pi_linkTP_keepPIvars(htmlentities($this->piVars['myListMode']?"Show repository statistics":"Show member statistics"),array('myListMode'=>$this->piVars['myListMode']?"":"1", 'orderBy'=>'', 'desc'=>'')).'</p>';
+			$out="";
+			$out.='<p>'.$this->pi_linkTP_keepPIvars(htmlspecialchars($this->piVars["myListMode"]?"Show repository statistics":"Show member statistics"),array("myListMode"=>$this->piVars["myListMode"]?"":"1", "orderBy"=>"", "desc"=>"")).'</p>';
 			if ($repMode)	{
 				$out.='
 				<table border=0 cellpadding=0 cellspacing=2'.$this->pi_classParam('legend').'>

@@ -1205,8 +1205,8 @@ class tx_extrepmgm_singleviews extends tx_extrepmgm_pi1 {
 				<td'.$this->pi_classParam('HCell').'>&nbsp;</td>
 				<td colspan=3>
 					<input type="submit" name="_" value="Execute">
-					<input type="submit" name="_2" value="Cancel" onClick="document.location=unescape(\''.rawurlencode($backLink_url).'\'); return false;">
-					<input type="submit" name="_3" value="Redraw without save" onClick="document.location=unescape(\''.rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI')).'\'); return false;">
+					<input type="submit" name="_2" value="Cancel" onClick="document.location=unescape(\''.rawurlencode($GLOBALS['TSFE']->baseUrl.$backLink_url).'\'); return false;">
+					<input type="submit" name="_3" value="Redraw without save" onClick="document.location=unescape(\''.rawurlencode(t3lib_div::getIndpEnv("REQUEST_URI")).'\'); return false;">
 				</td>
 			</tr>';
 
