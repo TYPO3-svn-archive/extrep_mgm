@@ -1,8 +1,8 @@
 <?php
 
     // DO NOT REMOVE OR CHANGE THESE 3 LINES:
-define('TYPO3_MOD_PATH', '../typo3conf/ext/extrep_mgm/mod1/');
-$BACK_PATH='../../../../typo3/';
+define('TYPO3_MOD_PATH', 'ext/extrepmgm/mod1/');
+$BACK_PATH='../../../';
 $MCONF["name"]="web_txextrepmgmM1";
 
     
